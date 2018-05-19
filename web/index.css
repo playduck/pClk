@@ -1,0 +1,299 @@
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-color: var(--bg);
+	color: var(--text);
+	font-size: 1.25em;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", "serif";
+	transition: 0.3s;
+}
+::selection {
+	background: var(--acc);
+}
+::-moz-selection {
+	background: var(--acc);
+}
+a {
+	color: var(--text);
+}
+#top {
+	background-color: var(--sec);
+	padding: 10px;
+	position: relative;
+	padding-left: 3.5%;
+}
+
+#act {
+	cursor: not-allowed;
+	color: var(--sec)!important;
+	background-color: var(--hov)!important;
+}
+#main {
+	display: table;
+    width: 100%;
+	padding-bottom: 100%;
+	margin: 1.5%;
+	margin-left: 3%;
+	overflow-y: hidden;
+	table-layout: fixed;
+	transition: 0.3s;
+}
+.tab {
+	width: auto;
+	display: table-cell;
+	padding: 16px;
+	transition: 0.3s;
+}
+.tab p {
+	max-width: 70%;
+}
+	
+@media only screen and (max-width: 1300px) {
+	body {
+		overflow-y: visible;
+	}
+	.tab { 
+		display: block;
+		width: 100%;
+	}
+}
+.acc {
+	background-color: var(--acc);
+	width: 100%;
+	padding-bottom: 20px;
+	border-radius: 500px;
+}
+input:focus, button:focus{
+	outline: none;
+}
+.circle {
+	cursor: pointer;
+	position: fixed;
+	display: none;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	border-style: solid;
+	border-color: white;
+	border-width: 1%;
+	z-index: 1;
+	transition: margin 0.3s;
+	-webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	-moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+}
+#ccube {
+	position: relative;
+	margin: 1% 0;
+	user-select: none;
+	cursor: pointer;
+	border-radius: 5%;
+}
+#prev {
+	cursor: pointer;
+	border-radius: 500px;
+	border: none;
+	width: 100%;
+	max-width: 250px;
+	margin: 10px 0;
+	margin-bottom: -30px;
+	background-color: var(--acc);
+}
+ input[type="color"]::-webkit-color-swatch-wrapper {
+ 	border-radius: 500px;
+ 	padding: 0;
+}
+input[type="color"]::-moz-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+ input[type="color"]::-webkit-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+#hue {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 250px;
+	background-color: transparent;
+}
+ #hue::-webkit-slider-runnable-track {
+	 height: 50%;
+	 background: var(--bg);
+	 background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -webkit-linear-gradient(left, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -o-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -moz-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 border-radius: 50px;
+}
+ #hue::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	 border-radius: 50%;
+	 width: 30px;
+	 height: 30px;
+	 margin-top: -11px;
+	 border-style: solid;
+	 border-color: white;
+	 border-width: 1%;
+	 -webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 -moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 background: var(--acc) !important;
+}
+button, input[type="button"], input[type="submit"] {
+	font-size: 0.9em;
+	cursor: pointer;
+	border-radius: 500px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: var(--acc);
+	margin: auto;
+	margin-top: 3%;
+	color: var(--text);
+	background-color: var(--sec);
+	padding: 7px 15px;
+	transition: background-color 0.3s;
+	transition: color 0.3s;
+}
+button:hover, input[type="button"]:hover, input[type="submit"]:hover{
+	background-color: var(--hov);
+	color: var(--text);
+}	
+button:active, input[type="button"]:active, input[type="submit"]:active {
+	background-color: var(--bg);
+}
+input[type="text"], input[type="password"], input[type="number"], input[type="date"], input[type="time"] {
+	padding: 6px;
+	border-radius: 50px;
+	border: none;
+	margin: 8px 0;
+	background-color: var(--sec);
+	color: var(--text);
+}
+input[type="range"] {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 40%;
+	background-color: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track  {
+	height: 20%;
+	background-color: var(--thumb);
+	margin: auto;
+	border-radius: 50px;
+}
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	margin-top: -10px;
+	border-style: solid;
+	border-color: var(--thumb);
+	border-width: 1%;
+	background: var(--acc) !important;
+}
+input[type="checkbox"] {
+	visibility: hidden;
+}
+
+input[type="checkbox"] + label {
+	cursor: pointer;
+	position: absolute;
+	margin-top: 2px;
+	margin-left: -25px;
+	border-radius: 50px;
+	border: 3px solid var(--thumb);
+	background-color: var(--sec);
+	height: 20px;
+	width: 20px;
+}	
+input[type="checkbox"]:checked+label {
+	border-color: var(--acc);
+	background-color: var(--acc);
+}
+	
+.select {
+    position: relative;
+	max-width: 85%;
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 100%;
+	border: 2px solid var(--acc);
+	outline: none;
+}  
+.select select {
+	display: inline-block;
+	width: 100%;
+	cursor: pointer;
+	padding: 10px 15px;
+	background: var(--bg);
+	color: var(--text);
+	outline: none;
+	appearance: none;	
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+.select select::-ms-expand {
+	display: none;
+}
+.select select:hover,
+.select select:focus {
+	color: var(--text);
+	background: var(--sec);
+}
+.select select:disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+.select_arrow {
+	position: absolute;
+	top: 16px;
+	right: 15px;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0px 5px;
+    border-color: var(--text) transparent transparent transparent;
+	transform: rotate(90deg);
+	transition: 0.3s;
+}
+.select select:focus ~ .select_arrow {
+    border-top-color: var(--text);
+	transform: rotate(0deg);
+}
+
+k {
+	margin-left: 0.3em;
+}
+.snackbar {
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #52B55E;
+    color: #EEEEEE;
+    text-align: center;
+    border-radius: 200px;
+	border: solid 5px var(--sec);
+    padding: 16px;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+	transition: 0.3s;
+	opacity: 0;
+}
+
+.snackbar.show {
+	opacity: 1;
+}
+	
