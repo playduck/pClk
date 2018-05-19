@@ -1,0 +1,873 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<title>Untitled Document</title>
+	<link rel="icon" type="image/png" href="/favicon.png" sizes="128x128">
+<style type="text/css">
+	
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-color: var(--bg);
+	color: var(--text);
+	font-size: 1.25em;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", "serif";
+	transition: 0.3s;
+}
+::selection {
+	background: var(--acc);
+}
+::-moz-selection {
+	background: var(--acc);
+}
+a {
+	color: var(--text);
+}
+#top {
+	background-color: var(--sec);
+	padding: 10px;
+	position: relative;
+	padding-left: 3.5%;
+}
+
+#act {
+	cursor: not-allowed;
+	color: var(--sec)!important;
+	background-color: var(--hov)!important;
+}
+#main {
+	display: table;
+    width: 100%;
+	padding-bottom: 100%;
+	margin: 1.5%;
+	margin-left: 3%;
+	overflow-y: hidden;
+	table-layout: fixed;
+	transition: 0.3s;
+}
+.tab {
+	width: auto;
+	display: table-cell;
+	padding: 16px;
+	transition: 0.3s;
+}
+.tab p {
+	max-width: 70%;
+}
+	
+@media only screen and (max-width: 1300px) {
+	body {
+		overflow-y: visible;
+	}
+	.tab { 
+		display: block;
+		width: 100%;
+	}
+}
+.acc {
+	background-color: var(--acc);
+	width: 100%;
+	padding-bottom: 20px;
+	border-radius: 500px;
+}
+input:focus, button:focus{
+	outline: none;
+}
+.circle {
+	cursor: pointer;
+	position: fixed;
+	display: none;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	border-style: solid;
+	border-color: white;
+	border-width: 1%;
+	z-index: 1;
+	transition: margin 0.3s;
+	-webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	-moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+}
+#ccube {
+	position: relative;
+	margin: 1% 0;
+	user-select: none;
+	cursor: pointer;
+	border-radius: 5%;
+}
+#prev {
+	cursor: pointer;
+	border-radius: 500px;
+	border: none;
+	width: 100%;
+	max-width: 245px;
+	margin: 10px 0;
+	margin-bottom: -30px;
+	background-color: var(--acc);
+}
+ input[type="color"]::-webkit-color-swatch-wrapper {
+ 	border-radius: 500px;
+ 	padding: 0;
+}
+input[type="color"]::-moz-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+ input[type="color"]::-webkit-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+#hue {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 250px;
+	background-color: transparent;
+}
+ #hue::-webkit-slider-runnable-track {
+	 height: 50%;
+	 background: var(--bg);
+	 background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -webkit-linear-gradient(left, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -o-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -moz-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 border-radius: 50px;
+}
+ #hue::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	 border-radius: 50%;
+	 width: 30px;
+	 height: 30px;
+	 margin-top: -11px;
+	 border-style: solid;
+	 border-color: white;
+	 border-width: 1%;
+	 -webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 -moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 background: var(--acc) !important;
+}
+button, input[type="button"], input[type="submit"] {
+	font-size: 0.9em;
+	cursor: pointer;
+	border-radius: 500px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: var(--acc);
+	margin: auto;
+	margin-top: 3%;
+	color: var(--text);
+	background-color: var(--sec);
+	padding: 7px 15px;
+	transition: background-color 0.3s;
+	transition: color 0.3s;
+}
+button:hover, input[type="button"]:hover, input[type="submit"]:hover{
+	background-color: var(--hov);
+	color: var(--text);
+}	
+button:active, input[type="button"]:active, input[type="submit"]:active {
+	background-color: var(--bg);
+}
+input[type="text"], input[type="password"], input[type="number"], input[type="date"], input[type="time"] {
+	padding: 6px;
+	border-radius: 50px;
+	border: none;
+	margin: 8px 0;
+	background-color: var(--sec);
+	color: var(--text);
+}
+input[type="range"] {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 40%;
+	background-color: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track  {
+	height: 20%;
+	background-color: var(--thumb);
+	margin: auto;
+	border-radius: 50px;
+}
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	margin-top: -10px;
+	border-style: solid;
+	border-color: var(--thumb);
+	border-width: 1%;
+	background: var(--acc) !important;
+}
+input[type="checkbox"] {
+	visibility: hidden;
+}
+
+input[type="checkbox"] + label {
+	cursor: pointer;
+	position: absolute;
+	margin-top: 2px;
+	margin-left: -25px;
+	border-radius: 50px;
+	border: 3px solid var(--thumb);
+	background-color: var(--sec);
+	height: 20px;
+	width: 20px;
+}	
+input[type="checkbox"]:checked+label {
+	border-color: var(--acc);
+	background-color: var(--acc);
+}
+	
+.select {
+    position: relative;
+	max-width: 85%;
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 100%;
+	border: 2px solid var(--acc);
+	outline: none;
+}  
+.select select {
+	display: inline-block;
+	width: 100%;
+	cursor: pointer;
+	padding: 10px 15px;
+	background: var(--bg);
+	color: var(--text);
+	outline: none;
+	appearance: none;	
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+.select select::-ms-expand {
+	display: none;
+}
+.select select:hover,
+.select select:focus {
+	color: var(--text);
+	background: var(--sec);
+}
+.select select:disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+.select_arrow {
+	position: absolute;
+	top: 16px;
+	right: 15px;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0px 5px;
+    border-color: var(--text) transparent transparent transparent;
+	transform: rotate(90deg);
+	transition: 0.3s;
+}
+.select select:focus ~ .select_arrow {
+    border-top-color: var(--text);
+	transform: rotate(0deg);
+}
+
+k {
+	margin-left: 0.3em;
+}
+.snackbar {
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #52B55E;
+    color: #EEEEEE;
+    text-align: center;
+    border-radius: 200px;
+	border: solid 5px var(--sec);
+    padding: 16px;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+	transition: 0.3s;
+	opacity: 0;
+}
+
+.snackbar.show {
+	opacity: 1;
+}
+	
+</style>
+<style type="text/css" id="acc">
+:root {
+	--acc: #204040!important
+}
+</style>
+<style type="text/css" id="sty">
+:root {}
+</style>
+		
+
+<script type="text/javascript">
+
+	let doUpdate = false;
+	let global_hue; 
+	let global_cx, global_cy;
+	let connection;
+	let connected;
+
+	window.onload = function ()	{
+		initWs();
+		updateStyle();
+		//changeTab("L");
+		//window.scroll(0,0);
+		findColor( Math.random()*255, Math.random()*255, Math.random()*255, false );
+		setTimeSelect(0);
+		//draw(global_hue);
+		/*loop();*/
+		//updateTime();
+	};
+	
+	window.onmousemove = function(event)	{
+		if(doUpdate)	{
+			document.body.style.cursor = "pointer";
+			getColor(global_hue, event.clientX, event.clientY);
+		}
+	};
+
+	window.onmouseup	= function()	{
+		doUpdate = false;
+		document.body.style.cursor = "auto";
+	};
+
+	window.onscroll	= function()	{
+		getNeColor();
+	};
+
+	window.onresize = function()	{
+		getNeColor();
+	};
+
+	window.onclose = function()		{
+		try	{
+			connection.close();
+			c_AP.close();
+			c_STA.close();
+		}	catch(e)	{}
+	};
+		
+	function sendWs(a)	{
+		try {
+			console.log(a);
+			console.log( JSON.stringify(a) );
+			connection.send(JSON.stringify(a));
+		} catch (e) {}
+		//triggerSnackbar("success");
+	}
+	
+	function updateTime(a)	{
+		let d = new Date();
+		//document.getElementById("time").innerHTML = a[4]+":"+a[]
+		setTimeout(updateTime, 1 );
+	}
+	
+	function initWs() {
+
+			try	{
+				let c_AP = new WebSocket('ws://192.168.4.1/ws');
+				let c_STA = new WebSocket('ws://192.168.178.90/ws');
+			
+
+			c_AP.onopen = function () {
+				if (!connected) {
+					connection = c_AP;
+					connected = true;
+					c_STA.close();
+					receiveWs();
+					triggerSnackbar("con");
+				}
+			};
+
+			c_STA.onopen = function () {
+				if (!connected) {
+					connection = c_STA;
+					connected = true;
+					c_AP.close();
+					receiveWs();
+					triggerSnackbar("con");
+				}
+			};
+			}	catch(e)	{
+				console.log(e);	
+			}
+		}
+	
+	function receiveWs()	{
+			connection.onmessage = function(event) {
+				console.log("Received: "+ event.data);
+				if(event.data === "__s__" )	{
+					triggerSnackbar("success");
+					return;
+				}
+				let a = JSON.parse(event.data);
+				console.log(a);
+				if(a.rgb_led !== undefined)	{
+					findColor(a.rgb_led[0], a.rgb_led[1], a.rgb_led[2], false);
+				}
+			};
+	}
+
+	function sendWiFi()	{
+		let s	= document.getElementById("s").value;
+		let p	= document.getElementById("p").value;
+		sendWs( {"s_ssid":s, "s_pwd":p} );
+	}
+	
+	function sendDeviceTime()	{
+		let d = new Date();
+		sendWs( { "deviceTime":true, "time":[d.getYear(), d.getMonth(), d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]} );
+	}
+	
+	function sendNTP()	{
+		let gmtOff = document.getElementById("gmtoff").value /100.0 * 3600.0;
+		let dayOff = document.getElementById("dayoff").value /100.0 * 3600.0;
+		sendWs( {"ntpTime":true, "gmtOffset_sec":gmtOff, "daylightOffset_sec": dayOff} );
+	}
+	
+	function sendALR()	{
+		let re = 0;
+		for(let i = 0; i < 7; i++)	{
+			re = re | ( document.getElementById("wk"+i).checked ? 1 : 0 ) << i;
+		}
+		let h, m ,s;
+		let val = document.getElementById("alr").value;
+		if(val === "")
+			return;
+		h = parseInt(val.slice(0,2));
+		m = parseInt(val.slice(3,5));
+		let vol = document.getElementById("vol").value;
+		sendWs( {"re":re, "a_h":h, "a_m":m, "a_vol":vol} );
+	}
+	
+	function sendTz()	{
+		let b = document.getElementById("cs").options[document.getElementById("cs").selectedIndex].value;
+		let a = document.getElementById("tz"+b);
+		sendWs( {"ntpTime":true, "TZC":a.options[a.selectedIndex].value} );
+	}
+	
+	function setTimeSelect()	 {
+		let b = document.getElementById("cs").options[document.getElementById("cs").selectedIndex].value;
+		
+		for(i = 0; i < 10; i++)	{
+			document.getElementById("tz"+i).parentElement.style.display = "none";
+			if( i == b )	{
+				document.getElementById("tz"+i).parentElement.style.display = "";	
+			}
+		}
+		
+	}
+	
+	function toggleOp(a, b)	  	{
+		if(a == null)	{
+			a = document.getElementById(b).style.opacity == 1 ? false : true;
+		}
+		if(a)	{
+			document.getElementById(b).style.display="";
+			setTimeout(function(b) {document.getElementById(b).style.opacity = 1;}, 10, b);
+		}	else	{
+			document.getElementById(b).style.opacity = 0;
+			setTimeout(function(b) {document.getElementById(b).style.display="none";}, 200, b);
+		}
+	}
+	
+	function getNeColor()	{
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+		return getColor(global_hue, global_cx+rect.left, global_cy+rect.top, false);
+	}
+
+	function updateStyle(c) {
+		let a;
+		if (c == null) {
+			let b = new Date();
+			a = b.getHours()
+		} else {
+			a = c
+		}
+		if (a > 5 && a < 18) {
+			document.getElementById("sty").innerHTML =":root { --bg: #e4e4e4; --sec: #eee; --text: #444; --thumb: #9D9D9D; --hov: #e5e5e5;} "
+		} else {
+			document.getElementById("sty").innerHTML =":root { --bg: #222; --sec: #333333; --text: #aaa; --thumb: #5e5e5e; --hov: #424242;} "
+		}
+	}
+	
+	function draw(hue)	{
+		let canvas	= document.getElementById("ccube");
+		let w = canvas.scrollWidth;
+		let h = canvas.scrollHeight;
+		let ccube	= document.getElementById("ccube").getContext("2d");
+		let infill = 4;
+		hue /= 360.0;
+
+		for (let i = 0; i <= h; i+=infill) {
+
+			let a = HSVtoRGB(hue, 0, i/h);
+			let b = HSVtoRGB(hue, 1, i/h);
+
+			let g = ccube.createLinearGradient(0, i, w, i);
+			g.addColorStop(0, "rgb("+a.r+","+a.g+","+a.b+")");
+			g.addColorStop(1, "rgb("+b.r+","+b.g+","+b.b+")");
+			ccube.fillStyle = g;
+			ccube.fillRect(0, h-i, w, infill);	
+		}
+	}
+
+	function getColor(h, x, y, send=true)	{
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+		let cursor = document.getElementById("c");
+
+		let cx = x - rect.left;
+		let cy = y - rect.top;
+
+		cx = Math.min(Math.max(cx, 0), canvas.scrollWidth	);
+		cy = Math.min(Math.max(cy, 0), canvas.scrollHeight	);
+
+		global_cx = cx;
+		global_cy = cy;
+
+		let c = HSVtoRGB(h/360, cx / canvas.scrollWidth,(canvas.scrollHeight- cy) / canvas.scrollHeight);
+		setPreview(c);
+		cursor.style = "display: block; left: " + (cx + rect.left - 11) + "px; top: " + (cy + rect.top - 11) + "px; background-color: rgb(" + c.r + "," + c.g + "," + c.b + ");";
+		if(send) 
+			sendWs( { "rgb":[c.r, c.g, c.b] } );
+		return  {r:c.r, g:c.g, b:c.b };
+	}
+
+	function setPreview(c)	{
+		let r = c.r.toString(16).length === 1 ? "0"+String(c.r.toString(16)) : c.r.toString(16);
+		let g = c.g.toString(16).length === 1 ? "0"+String(c.g.toString(16)) : c.g.toString(16);
+		let b = c.b.toString(16).length === 1 ? "0"+String(c.b.toString(16)) : c.b.toString(16);
+		document.getElementById("prev").value = "#"+r+""+g+""+b;
+		document.getElementById("acc").innerHTML = " :root { --acc: rgb(" + c.r + "," + c.g + "," + c.b + "); }";
+	}
+
+	function findColor(r, g, b, send=true)	{
+		
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+
+		let h, x, y;
+		let c = RGBtoHSV(r, g, b);
+		h = c.h * 360;
+		if(h !== 0)	{
+			global_hue = h;
+		}
+		document.getElementById("hue").value = global_hue;
+		draw(global_hue);
+		x = c.s*canvas.scrollWidth + rect.left;
+		y = canvas.scrollHeight - c.v*canvas.scrollHeight + rect.top;
+		getColor(global_hue, x, y, send);
+	}
+
+	function updateHue()	{
+		let canvas = document.getElementById("ccube");
+		doUpdate = false;
+		global_hue = document.getElementById("hue").value;
+		draw(global_hue);
+		let c = HSVtoRGB(global_hue / 360, global_cx / canvas.scrollWidth, (canvas.scrollHeight - global_cy) / canvas.scrollHeight);
+		findColor(c.r, c.g, c.b);
+	}
+
+	function findHex(s)	{
+		s = s.slice(1,7);
+		if(s.length < 6)	{
+			s = "0"+String(s);
+		}
+		
+		let r = parseInt(s.slice(0,2), 16);
+		let g = parseInt(s.slice(2,4), 16);
+		let b = parseInt(s.slice(4,6), 16);
+
+		findColor(r,g,b);
+	}
+		
+	function HSVtoRGB(h, s, v)	{
+		let r, g, b, i, f, p, q, t;
+		if (arguments.length === 1) {
+			s = h.s, v = h.v, h = h.h;
+		}
+		i = Math.floor(h * 6);
+		f = h * 6 - i;
+		p = v * (1 - s);
+		q = v * (1 - f * s);
+		t = v * (1 - (1 - f) * s);
+		switch (i % 6) {
+			case 0:
+				r = v, g = t, b = p;
+				break;
+			case 1:
+				r = q, g = v, b = p;
+				break;
+			case 2:
+				r = p, g = v, b = t;
+				break;
+			case 3:
+				r = p, g = q, b = v;
+				break;
+			case 4:
+				r = t, g = p, b = v;
+				break;
+			case 5:
+				r = v, g = p, b = q;
+				break;
+			}
+			return {
+				r: Math.round(r * 255),
+				g: Math.round(g * 255),
+				b: Math.round(b * 255)
+			};
+		}
+
+	function RGBtoHSV(r, g, b) {
+				r /= 255, g /= 255, b /= 255;
+
+			var max = Math.max(r, g, b), min = Math.min(r, g, b);
+			var h, s, v = max;
+
+			var d = max - min;
+			s = max == 0 ? 0 : d / max;
+
+			if (max == min) {
+				h = 0;
+			} else {
+				switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+
+			h /= 6;
+			}
+
+			return {
+				h: h,
+				s: s,
+				v: v
+			};
+	}
+		
+	function revealPass()	{
+		if (document.getElementById("p").type === "password")
+			document.getElementById("p").type = "text";
+		else
+			document.getElementById("p").type = "password";
+	}
+
+	function triggerSnackbar(b)	{
+		let a = document.getElementById(b);
+		if( !a.className.includes("show"))	{
+			a.className += " show";
+			setTimeout( f => { a.className = a.className.replace("show", ""); }, 1400);
+		}
+	}
+	
+	</script>
+	
+</head>
+
+<body stye="margin: 0; pading: 0">
+<div id="top" style="font-size:30px;"> <span > Clock Setup <i>Thing</i></span> <span id="time" style="margin-left: 25px"></span> </div>
+<div class="acc" style="margin-bottom: -30px; border-radius: 0!important;"></div>
+<div id="sdnav" class="sidenav">
+	<div class="acc"></div>
+</div>
+	
+<div class="snackbar" id="success">	&#10004; Command received sucessfully</div>
+<div class="snackbar" id="con" style="background-color: #5CA9E8"> &#128246; Connection Established</div>
+	
+<div id="main">
+	<div class="tab" id="L"	>
+		<h1>Lighting</h1>
+		<p>Change the devices LED lighting! Note: The device may not properly render some colors! Click the Apply button to save the current color to the builtin conifig to save the lighting settings!</p>
+		<div class="circle" id="c"></div>
+		<canvas id="ccube" width="250%" height="250%" onmousedown="doUpdate = true;" onclick="getColor(global_hue, event.clientX, event.clientY);"> </canvas>
+		<br>
+		<div >
+				<input type="color" id="prev" onchange="findHex(this.value)">
+			</div>
+		<br>
+		<input type="range" min="1" max="360" id="hue" oninput="updateHue()">
+
+	</div>
+	<div class="tab" id="W"	>
+		<h1>WiFi</h1>
+		<p>Change the devices WiFi log-in information. To enter acesspoint mode, simply press the devices main physical button during startup.</p>
+			<input type="text" id="s" placeholder="SSID"> <br>
+			<input type="password" id="p" placeholder="password"> <br>
+			<input type="checkbox" id="reveal" onClick="revealPass()">
+			<label for="reveal"></label> <k style="margin-left: 0.6em;">Reveal Password</k> <br>
+			<input type="button" onClick="sendWiFi();" value="Submit">	
+
+	
+	</div>
+	<div class="tab" id="T"	>
+		<h1>Time</h1>
+		
+		<div style="margin-bottom: 8%">
+			<p style="margin: 2% 0">Update the internal time by either setting it to this devices time or to the global <a target="_blank" href="http://www.pool.ntp.org/en/"> Network Time Protocol (NTP)</a>.</p>
+			<button onClick="toggleOp(false,'NTPS'); sendDeviceTime();" style="margin-right:0.9em;">Use device time</button>
+			<button onClick="toggleOp(true,'NTPS');">Use NTP</button>
+		</div>
+		
+		<div id="NTPS" style="opacity: 0; display: none; transition: 0.3s">
+			<div class="acc" style="padding-bottom: 5px; max-width: 85%"></div>
+			<div style="margin-top: 6%">
+				<!--
+				<p>To use NTP set your local timezone and daylight saving time in houres. The expected input is: <code>HHmm</code>. One Hour and a half hour offset would be <code>0130</code>.</p>
+					<input id="gmtoff" type="number" style="width: 150px" max="9999"> GMT offset <br>
+					<input id="dayoff" type="number" style="width: 150px" max="9999"> Daylight Savings <br>
+					<input type="button" onClick="sendNTP();" value="Submit">	
+				-->
+				<p>Set your local timezone</p>
+				<div class="select">
+					<select id="cs" onChange="setTimeSelect(); document.getElementById('stz').focus();">
+						<option value="0">Africa</option>
+						<option value="1">America</option>
+						<option value="2">Antarctica</option>
+						<option value="3">Asia</option>
+						<option value="4">Atlantic</option>
+						<option value="5">Australia</option>
+						<option value="6">Europe</option>
+						<option value="7">Indian</option>
+						<option value="8">Pacific</option>
+						<option value="9">Etc</option>
+					</select>
+					<div class="select_arrow"></div>
+				</div>
+				<br>
+			<div onChange="document.getElementById('stz').focus();" >
+				<div class="select">
+					<select id="tz0">
+						<option value="GMT0">Abidjan</option><option value="GMT0">Accra</option><option value="EAT-3">Addis Ababa</option><option value="CET-1">Algiers</option><option value="EAT-3">Asmara</option><option value="GMT0">Bamako</option><option value="WAT-1">Bangui</option><option value="GMT0">Banjul</option><option value="GMT0">Bissau</option><option value="CAT-2">Blantyre</option><option value="WAT-1">Brazzaville</option><option value="CAT-2">Bujumbura</option><option value="EET-2">Cairo</option><option value="WET0WEST,M3.5.0,M10.5.0 / 3">Casablanca</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Ceuta</option><option value="GMT0">Conakry</option><option value="GMT0">Dakar</option><option value="EAT-3">Dar es Salaam</option><option value="EAT-3">Djibouti</option><option value="WAT-1">Douala</option><option value="WET0WEST,M3.5.0,M10.5.0 / 3">El Aaiun</option><option value="GMT0">Freetown</option><option value="CAT-2">Gaborone</option><option value="CAT-2">Harare</option><option value="SAST-2">Johannesburg</option><option value="EAT-3">Juba</option><option value="EAT-3">Kampala</option><option value="CAT-2">Khartoum</option><option value="CAT-2">Kigali</option><option value="WAT-1">Kinshasa</option><option value="WAT-1">Lagos</option><option value="WAT-1">Libreville</option><option value="GMT0">Lome</option><option value="WAT-1">Luanda</option><option value="CAT-2">Lubumbashi</option><option value="CAT-2">Lusaka</option><option value="WAT-1">Malabo</option><option value="CAT-2">Maputo</option><option value="SAST-2">Maseru</option><option value="SAST-2">Mbabane</option><option value="EAT-3">Mogadishu</option><option value="GMT0">Monrovia</option><option value="EAT-3">Nairobi</option><option value="WAT-1">Ndjamena</option><option value="WAT-1">Niamey</option><option value="GMT0">Nouakchott</option><option value="GMT0">Ouagadougou</option><option value="WAT-1">Porto-Novo</option><option value="WAT-1">Sao Tome</option><option value="EET-2">Tripoli</option><option value="CET-1">Tunis</option><option value="CAT-2">Windhoek</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+					
+				<div class="select">
+					<select id="tz1">
+				<option value="HST10HDT,M3.2.0,M11.1.0">Adak</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Anchorage</option><option value="AST4">Anguilla</option><option value="AST4">Antigua</option><option value="<-03>3">Araguaina</option><option value="<-03>3">Buenos Aires</option><option value="<-03>3">Catamarca</option><option value="<-03>3">Cordoba</option><option value="<-03>3">Jujuy</option><option value="<-03>3">La Rioja</option><option value="<-03>3">Mendoza</option><option value="<-03>3">Rio Gallegos</option><option value="<-03>3">Salta</option><option value="<-03>3">San Juan</option><option value="<-03>3">San Luis</option><option value="<-03>3">Tucuman</option><option value="<-03>3">Ushuaia</option><option value="AST4">Aruba</option><option value="<-04>4<-03>,M10.1.0 / 0,M3.4.0 / 0">Asuncion</option><option value="EST5">Atikokan</option><option value="<-03>3">Bahia</option><option value="CST6CDT,M4.1.0,M10.5.0">Bahia Banderas</option><option value="AST4">Barbados</option><option value="<-03>3">Belem</option><option value="CST6">Belize</option><option value="AST4">Blanc-Sablon</option><option value="<-04>4">Boa Vista</option><option value="<-05>5">Bogota</option><option value="MST7MDT,M3.2.0,M11.1.0">Boise</option><option value="MST7MDT,M3.2.0,M11.1.0">Cambridge Bay</option><option value="<-04>4<-03>,M11.1.0 / 0,M2.3.0 / 0">Campo Grande</option><option value="EST5">Cancun</option><option value="<-04>4">Caracas</option><option value="<-03>3">Cayenne</option><option value="EST5">Cayman</option><option value="CST6CDT,M3.2.0,M11.1.0">Chicago</option><option value="MST7MDT,M4.1.0,M10.5.0">Chihuahua</option><option value="CST6">Costa Rica</option><option value="MST7">Creston</option><option value="<-04>4<-03>,M11.1.0 / 0,M2.3.0 / 0">Cuiaba</option><option value="AST4">Curacao</option><option value="GMT0">Danmarkshavn</option><option value="PST8PDT,M3.2.0,M11.1.0">Dawson</option><option value="MST7">Dawson Creek</option><option value="MST7MDT,M3.2.0,M11.1.0">Denver</option><option value="EST5EDT,M3.2.0,M11.1.0">Detroit</option><option value="AST4">Dominica</option><option value="MST7MDT,M3.2.0,M11.1.0">Edmonton</option><option value="<-05>5">Eirunepe</option><option value="CST6">El Salvador</option><option value="<-03>3">Fortaleza</option><option value="MST7">Fort Nelson</option><option value="AST4ADT,M3.2.0,M11.1.0">Glace Bay</option><option value="<-03>3<-02>,M3.5.0 / -2,M10.5.0 / -1">Godthab</option><option value="AST4ADT,M3.2.0,M11.1.0">Goose Bay</option><option value="EST5EDT,M3.2.0,M11.1.0">Grand Turk</option><option value="AST4">Grenada</option><option value="AST4">Guadeloupe</option><option value="CST6">Guatemala</option><option value="<-05>5">Guayaquil</option><option value="<-04>4">Guyana</option><option value="AST4ADT,M3.2.0,M11.1.0">Halifax</option><option value="CST5CDT,M3.2.0 / 0,M11.1.0 / 1">Havana</option><option value="MST7">Hermosillo</option><option value="EST5EDT,M3.2.0,M11.1.0">Indianapolis</option><option value="CST6CDT,M3.2.0,M11.1.0">Knox</option><option value="EST5EDT,M3.2.0,M11.1.0">Marengo</option><option value="EST5EDT,M3.2.0,M11.1.0">Petersburg</option><option value="CST6CDT,M3.2.0,M11.1.0">Tell City</option><option value="EST5EDT,M3.2.0,M11.1.0">Vevay</option><option value="EST5EDT,M3.2.0,M11.1.0">Vincennes</option><option value="EST5EDT,M3.2.0,M11.1.0">Winamac</option><option value="MST7MDT,M3.2.0,M11.1.0">Inuvik</option><option value="EST5EDT,M3.2.0,M11.1.0">Iqaluit</option><option value="EST5">Jamaica</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Juneau</option><option value="EST5EDT,M3.2.0,M11.1.0">Louisville</option><option value="EST5EDT,M3.2.0,M11.1.0">Monticello</option><option value="AST4">Kralendijk</option><option value="<-04>4">La Paz</option><option value="<-05>5">Lima</option><option value="PST8PDT,M3.2.0,M11.1.0">Los Angeles</option><option value="AST4">Lower Princes</option><option value="<-03>3">Maceio</option><option value="CST6">Managua</option><option value="<-04>4">Manaus</option><option value="AST4">Marigot</option><option value="AST4">Martinique</option><option value="CST6CDT,M3.2.0,M11.1.0">Matamoros</option><option value="MST7MDT,M4.1.0,M10.5.0">Mazatlan</option><option value="CST6CDT,M3.2.0,M11.1.0">Menominee</option><option value="CST6CDT,M4.1.0,M10.5.0">Merida</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Metlakatla</option><option value="CST6CDT,M4.1.0,M10.5.0">Mexico City</option><option value="<-03>3<-02>,M3.2.0,M11.1.0">Miquelon</option><option value="AST4ADT,M3.2.0,M11.1.0">Moncton</option><option value="CST6CDT,M4.1.0,M10.5.0">Monterrey</option><option value="<-03>3">Montevideo</option><option value="EST5EDT,M3.2.0,M11.1.0">Montreal</option><option value="AST4">Montserrat</option><option value="EST5EDT,M3.2.0,M11.1.0">Nassau</option><option value="EST5EDT,M3.2.0,M11.1.0">New York</option><option value="EST5EDT,M3.2.0,M11.1.0">Nipigon</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Nome</option><option value="<-02>2">Noronha</option><option value="CST6CDT,M3.2.0,M11.1.0">Beulah</option><option value="CST6CDT,M3.2.0,M11.1.0">Center</option><option value="CST6CDT,M3.2.0,M11.1.0">New Salem</option><option value="MST7MDT,M3.2.0,M11.1.0">Ojinaga</option><option value="EST5">Panama</option><option value="EST5EDT,M3.2.0,M11.1.0">Pangnirtung</option><option value="<-03>3">Paramaribo</option><option value="MST7">Phoenix</option><option value="EST5EDT,M3.2.0,M11.1.0">Port-au-Prince</option><option value="AST4">Port of Spain</option><option value="<-04>4">Porto Velho</option><option value="AST4">Puerto Rico</option><option value="<-03>3">Punta Arenas</option><option value="CST6CDT,M3.2.0,M11.1.0">Rainy River</option><option value="CST6CDT,M3.2.0,M11.1.0">Rankin Inlet</option><option value="<-03>3">Recife</option><option value="CST6">Regina</option><option value="CST6CDT,M3.2.0,M11.1.0">Resolute</option><option value="<-05>5">Rio Branco</option><option value="<-03>3">Santarem</option><option value="<-04>4<-03>,M8.2.6 / 24,M5.2.6 / 24">Santiago</option><option value="AST4">Santo Domingo</option><option value="<-03>3<-02>,M11.1.0 / 0,M2.3.0 / 0">Sao Paulo</option><option value="<-01>1<+00>,M3.5.0 / 0,M10.5.0 / 1">Scoresbysund</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Sitka</option><option value="AST4">St Barthelemy</option><option value="NST3:30NDT,M3.2.0,M11.1.0">St Johns</option><option value="AST4">St Kitts</option><option value="AST4">St Lucia</option><option value="AST4">St Thomas</option><option value="AST4">St Vincent</option><option value="CST6">Swift Current</option><option value="CST6">Tegucigalpa</option><option value="AST4ADT,M3.2.0,M11.1.0">Thule</option><option value="EST5EDT,M3.2.0,M11.1.0">Thunder Bay</option><option value="PST8PDT,M3.2.0,M11.1.0">Tijuana</option><option value="EST5EDT,M3.2.0,M11.1.0">Toronto</option><option value="AST4">Tortola</option><option value="PST8PDT,M3.2.0,M11.1.0">Vancouver</option><option value="PST8PDT,M3.2.0,M11.1.0">Whitehorse</option><option value="CST6CDT,M3.2.0,M11.1.0">Winnipeg</option><option value="AKST9AKDT,M3.2.0,M11.1.0">Yakutat</option><option value="MST7MDT,M3.2.0,M11.1.0">Yellowknife</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz2">
+				<option value="<+08>-8">Casey</option><option value="<+07>-7">Davis</option><option value="<+10>-10">DumontDUrville</option><option value="<+11>-11">Macquarie</option><option value="<+05>-5">Mawson</option><option value="NZST-12NZDT,M9.5.0,M4.1.0 / 3">McMurdo</option><option value="<-03>3">Palmer</option><option value="<-03>3">Rothera</option><option value="<+03>-3">Syowa</option><option value="<+00>0<+02>-2,M3.5.0 / 1,M10.5.0 / 3">Troll</option><option value="<+06>-6">Vostok</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz3">
+				<option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Longyearbyen</option><option value="<+03>-3">Aden</option><option value="<+06>-6">Almaty</option><option value="EET-2EEST,M3.5.4 / 24,M10.5.5 / 1">Amman</option><option value="<+12>-12">Anadyr</option><option value="<+05>-5">Aqtau</option><option value="<+05>-5">Aqtobe</option><option value="<+05>-5">Ashgabat</option><option value="<+05>-5">Atyrau</option><option value="<+03>-3">Baghdad</option><option value="<+03>-3">Bahrain</option><option value="<+04>-4">Baku</option><option value="<+07>-7">Bangkok</option><option value="<+07>-7">Barnaul</option><option value="EET-2EEST,M3.5.0 / 0,M10.5.0 / 0">Beirut</option><option value="<+06>-6">Bishkek</option><option value="<+08>-8">Brunei</option><option value="<+09>-9">Chita</option><option value="<+08>-8">Choibalsan</option><option value="<+0530>-5:30">Colombo</option><option value="EET-2EEST,M3.5.5 / 0,M10.5.5 / 0">Damascus</option><option value="<+06>-6">Dhaka</option><option value="<+09>-9">Dili</option><option value="<+04>-4">Dubai</option><option value="<+05>-5">Dushanbe</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Famagusta</option><option value="EET-2EEST,M3.4.6 / 1,M10.5.6 / 1">Gaza</option><option value="EET-2EEST,M3.4.6 / 1,M10.5.6 / 1">Hebron</option><option value="<+07>-7">Ho Chi Minh</option><option value="HKT-8">Hong Kong</option><option value="<+07>-7">Hovd</option><option value="<+08>-8">Irkutsk</option><option value="WIB-7">Jakarta</option><option value="WIT-9">Jayapura</option><option value="IST-2IDT,M3.4.4 / 26,M10.5.0">Jerusalem</option><option value="<+0430>-4:30">Kabul</option><option value="<+12>-12">Kamchatka</option><option value="PKT-5">Karachi</option><option value="<+0545>-5:45">Kathmandu</option><option value="<+09>-9">Khandyga</option><option value="IST-5:30">Kolkata</option><option value="<+07>-7">Krasnoyarsk</option><option value="<+08>-8">Kuala Lumpur</option><option value="<+08>-8">Kuching</option><option value="<+03>-3">Kuwait</option><option value="CST-8">Macau</option><option value="<+11>-11">Magadan</option><option value="WITA-8">Makassar</option><option value="<+08>-8">Manila</option><option value="<+04>-4">Muscat</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Nicosia</option><option value="<+07>-7">Novokuznetsk</option><option value="<+07>-7">Novosibirsk</option><option value="<+06>-6">Omsk</option><option value="<+05>-5">Oral</option><option value="<+07>-7">Phnom Penh</option><option value="WIB-7">Pontianak</option><option value="KST-8:30">Pyongyang</option><option value="<+03>-3">Qatar</option><option value="<+06>-6">Qyzylorda</option><option value="<+03>-3">Riyadh</option><option value="<+11>-11">Sakhalin</option><option value="<+05>-5">Samarkand</option><option value="KST-9">Seoul</option><option value="CST-8">Shanghai</option><option value="<+08>-8">Singapore</option><option value="<+11>-11">Srednekolymsk</option><option value="CST-8">Taipei</option><option value="<+05>-5">Tashkent</option><option value="<+04>-4">Tbilisi</option><option value="<+0330>-3:30<+0430>,J80 / 0,J264 / 0">Tehran</option><option value="<+06>-6">Thimphu</option><option value="JST-9">Tokyo</option><option value="<+07>-7">Tomsk</option><option value="<+08>-8">Ulaanbaatar</option><option value="<+06>-6">Urumqi</option><option value="<+10>-10">Ust-Nera</option><option value="<+07>-7">Vientiane</option><option value="<+10>-10">Vladivostok</option><option value="<+09>-9">Yakutsk</option><option value="<+0630>-6:30">Yangon</option><option value="<+05>-5">Yekaterinburg</option><option value="<+04>-4">Yerevan</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz4">
+				<option value="<-01>1<+00>,M3.5.0 / 0,M10.5.0 / 1">Azores</option><option value="AST4ADT,M3.2.0,M11.1.0">Bermuda</option><option value="WET0WEST,M3.5.0 / 1,M10.5.0">Canary</option><option value="<-01>1">Cape Verde</option><option value="WET0WEST,M3.5.0 / 1,M10.5.0">Faroe</option><option value="WET0WEST,M3.5.0 / 1,M10.5.0">Madeira</option><option value="GMT0">Reykjavik</option><option value="<-02>2">South Georgia</option><option value="<-03>3">Stanley</option><option value="GMT0">St Helena</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz5">
+				<option value="ACST-9:30ACDT,M10.1.0,M4.1.0 / 3">Adelaide</option><option value="AEST-10">Brisbane</option><option value="ACST-9:30ACDT,M10.1.0,M4.1.0 / 3">Broken Hill</option><option value="AEST-10AEDT,M10.1.0,M4.1.0 / 3">Currie</option><option value="ACST-9:30">Darwin</option><option value="<+0845>-8:45">Eucla</option><option value="AEST-10AEDT,M10.1.0,M4.1.0 / 3">Hobart</option><option value="AEST-10">Lindeman</option><option value="<+1030>-10:30<+11>-11,M10.1.0,M4.1.0">Lord Howe</option><option value="AEST-10AEDT,M10.1.0,M4.1.0 / 3">Melbourne</option><option value="AWST-8">Perth</option><option value="AEST-10AEDT,M10.1.0,M4.1.0 / 3">Sydney</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz6">
+				<option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Amsterdam</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Andorra</option><option value="<+04>-4">Astrakhan</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Athens</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Belgrade</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Berlin</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Bratislava</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Brussels</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Bucharest</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Budapest</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Busingen</option><option value="EET-2EEST,M3.5.0,M10.5.0 / 3">Chisinau</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Copenhagen</option><option value="GMT0IST,M3.5.0 / 1,M10.5.0">Dublin</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Gibraltar</option><option value="GMT0BST,M3.5.0 / 1,M10.5.0">Guernsey</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Helsinki</option><option value="GMT0BST,M3.5.0 / 1,M10.5.0">Isle of Man</option><option value="<+03>-3">Istanbul</option><option value="GMT0BST,M3.5.0 / 1,M10.5.0">Jersey</option><option value="EET-2">Kaliningrad</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Kiev</option><option value="<+03>-3">Kirov</option><option value="WET0WEST,M3.5.0 / 1,M10.5.0">Lisbon</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Ljubljana</option><option value="GMT0BST,M3.5.0 / 1,M10.5.0">London</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Luxembourg</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Madrid</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Malta</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Mariehamn</option><option value="<+03>-3">Minsk</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Monaco</option><option value="MSK-3">Moscow</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Oslo</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Paris</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Podgorica</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Prague</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Riga</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Rome</option><option value="<+04>-4">Samara</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">San Marino</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Sarajevo</option><option value="<+04>-4">Saratov</option><option value="MSK-3">Simferopol</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Skopje</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Sofia</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Stockholm</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Tallinn</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Tirane</option><option value="<+04>-4">Ulyanovsk</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Uzhgorod</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Vaduz</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Vatican</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Vienna</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Vilnius</option><option value="<+03>-3">Volgograd</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Warsaw</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Zagreb</option><option value="EET-2EEST,M3.5.0 / 3,M10.5.0 / 4">Zaporozhye</option><option value="CET-1CEST,M3.5.0,M10.5.0 / 3">Zurich</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz7">
+				<option value="EAT-3">Antananarivo</option><option value="<+06>-6">Chagos</option><option value="<+07>-7">Christmas</option><option value="<+0630>-6:30">Cocos</option><option value="EAT-3">Comoro</option><option value="<+05>-5">Kerguelen</option><option value="<+04>-4">Mahe</option><option value="<+05>-5">Maldives</option><option value="<+04>-4">Mauritius</option><option value="EAT-3">Mayotte</option><option value="<+04>-4">Reunion</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+		
+				<div class="select">
+					<select id="tz8">
+				<option value="<+13>-13<+14>,M9.5.0 / 3,M4.1.0 / 4">Apia</option><option value="NZST-12NZDT,M9.5.0,M4.1.0 / 3">Auckland</option><option value="<+11>-11">Bougainville</option><option value="<+1245>-12:45<+1345>,M9.5.0 / 2:45,M4.1.0 / 3:45">Chatham</option><option value="<+10>-10">Chuuk</option><option value="<-06>6<-05>,M8.2.6 / 22,M5.2.6 / 22">Easter</option><option value="<+11>-11">Efate</option><option value="<+13>-13">Enderbury</option><option value="<+13>-13">Fakaofo</option><option value="<+12>-12<+13>,M11.1.0,M1.2.1 / 147">Fiji</option><option value="<+12>-12">Funafuti</option><option value="<-06>6">Galapagos</option><option value="<-09>9">Gambier</option><option value="<+11>-11">Guadalcanal</option><option value="ChST-10">Guam</option><option value="HST10">Honolulu</option><option value="<+14>-14">Kiritimati</option><option value="<+11>-11">Kosrae</option><option value="<+12>-12">Kwajalein</option><option value="<+12>-12">Majuro</option><option value="<-0930>9:30">Marquesas</option><option value="SST11">Midway</option><option value="<+12>-12">Nauru</option><option value="<-11>11">Niue</option><option value="<+11>-11">Norfolk</option><option value="<+11>-11">Noumea</option><option value="SST11">Pago Pago</option><option value="<+09>-9">Palau</option><option value="<-08>8">Pitcairn</option><option value="<+11>-11">Pohnpei</option><option value="<+10>-10">Port Moresby</option><option value="<-10>10">Rarotonga</option><option value="ChST-10">Saipan</option><option value="<-10>10">Tahiti</option><option value="<+12>-12">Tarawa</option><option value="<+13>-13">Tongatapu</option><option value="<+12>-12">Wake</option><option value="<+12>-12">Wallis</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+				
+				<div class="select">
+					<select id="tz9">
+				<option value="GMT0">GMT</option><option value="GMT0">GMT-0</option><option value="<+01>-1">GMT-1</option><option value="<+02>-2">GMT-2</option><option value="<+03>-3">GMT-3</option><option value="<+04>-4">GMT-4</option><option value="<+05>-5">GMT-5</option><option value="<+06>-6">GMT-6</option><option value="<+07>-7">GMT-7</option><option value="<+08>-8">GMT-8</option><option value="<+09>-9">GMT-9</option><option value="<+10>-10">GMT-10</option><option value="<+11>-11">GMT-11</option><option value="<+12>-12">GMT-12</option><option value="<+13>-13">GMT-13</option><option value="<+14>-14">GMT-14</option><option value="GMT0">GMT0</option><option value="GMT0">GMT+0</option><option value="<-01>1">GMT+1</option><option value="<-02>2">GMT+2</option><option value="<-03>3">GMT+3</option><option value="<-04>4">GMT+4</option><option value="<-05>5">GMT+5</option><option value="<-06>6">GMT+6</option><option value="<-07>7">GMT+7</option><option value="<-08>8">GMT+8</option><option value="<-09>9">GMT+9</option><option value="<-10>10">GMT+10</option><option value="<-11>11">GMT+11</option><option value="<-12>12">GMT+12</option><option value="UCT0">UCT</option><option value="UTC0">UTC</option><option value="GMT0">Greenwich</option><option value="UTC0">Universal</option><option value="UTC0">Zulu</option>
+					</select>
+				<div class="select_arrow"></div>
+				</div>
+			
+			</div>
+				<input id="stz" type="button" value="Submit" onClick="sendTz()">
+				
+			</div>
+		</div>
+	</div>	
+	<div class="tab" id="A"	>
+		<h1>Alarm</h1>
+		<p>Change the devices Alarm</p>
+		
+		<input type="checkbox" id="enable" onClick="toggleOp(null,'ALRS');">
+		<label for="enable"></label> <k>Enable Alarm</k> <br>
+		<div id="ALRS" style="opacity: 0; display:none; transition: 0.3s;">
+			<div class="acc" style="padding-bottom: 5px; max-width: 85%; margin: 6% 0;"></div>
+			Repeat every: <br>
+			<input type="checkbox" id="wk0">
+			<label for="wk0"></label> <k>Monday</k> <br>
+			<input type="checkbox" id="wk1">
+			<label for="wk1"></label> <k>Tuesday</k> <br>
+			<input type="checkbox" id="wk2">
+			<label for="wk2"></label> <k >Wednesday</k> <br>
+			<input type="checkbox" id="wk3">
+			<label for="wk3"></label> <k>Thursday</k> <br>
+			<input type="checkbox" id="wk4">
+			<label for="wk4"></label> <k>Friday</k> <br>
+			<input type="checkbox" id="wk5">
+			<label for="wk5"></label> <k>Saturday</k> <br>
+			<input type="checkbox" id="wk6">
+			<label for="wk6"></label> <k>Sunday</k> <br>
+			at <code>HH:mm</code>
+			<input type="time" id="alr" style="margin-left: 10px;"> <br>
+			Volume	<input type="range" id="vol" style="margin-left: 10px; max-width: 150px" min="0" max="6" step="1"> <br>
+			<input type="button" onClick="sendALR();" value="Submit">
+		</div>
+	</div>
+	<div class="tab" id="S"	>
+		<h1>System</h1>
+		<p>Gerneral System settings</p>
+		<input type="button" value="Save Settings" onClick="sendWs({'saveSettings'}:true);">
+		<p>All settings are automatically saved before a system restart.</p>
+		<input type="button" value="Restart" onClick="sendWs({'reboot':true});">
+		<p>The System automatically restarts daily at <code>00:01h</code> and after closing this site.</p>
+	</div>
+</div>
+</body>
+</html>

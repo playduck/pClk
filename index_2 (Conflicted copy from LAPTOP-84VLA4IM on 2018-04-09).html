@@ -1,0 +1,580 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta content="width=device-width" name="viewport">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>do Stuff</title>
+</head>
+<style type="text/css">
+	html {
+		overflow-y: hidden;
+	}
+
+	body {
+		background-color: var(--bg);
+		margin: 40px auto;
+		max-width: 650px;
+		line-height: 1.6;
+		font-size: 18px;
+		color: var(--text);
+		padding: 0 10px;
+		font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", "Verdana", "sans-serif"
+	}
+	h1,
+	h2,
+	h3 {
+		line-height: 1.2;
+		font-size: 50px;
+		font-family: Cambria, "Hoefler Text", "Liberation Serif", "Times", "Times New Roman", "serif"
+	}
+
+	h2 {
+		font-size: 25px;
+		color: var(--sec);
+		margin-bottom: -5%;
+		opacity: 0
+	}
+
+	h3 {
+		font-size: 35px;
+	}
+
+	span {
+		position: relative;
+		margin: 2%;
+		font-style: italic;
+	}
+
+	p {
+		width: 90%;
+		overflow: hidden;
+	}
+
+	.b {
+		display: inline-block;
+		background-color: transparent;
+		color: var(--text);
+		font-size: 20px;
+		padding: 10px 25px;
+		margin: 25px 2px;
+		border: 5px solid var(--acc);
+		border-radius: 100px;
+		cursor: pointer;
+	}
+
+	.b:hover {
+		background-color: var(--hov);
+	}
+
+	input[type=range] {
+		-webkit-appearance: none;
+		width: 70%;
+		margin: 3% 15%
+	}
+
+	input[type=range]::-webkit-slider-runnable-track {
+		width: 100%;
+		height: 10px;
+		cursor: pointer;
+		border-radius: 0;
+		background: var(--acc)
+	}
+
+	input[type=range]::-webkit-slider-thumb {
+		height: 30px;
+		width: 30px;
+		border-radius: 100%;
+		background: var(--thumb)!important;
+		cursor: pointer;
+		-webkit-appearance: none;
+		margin-top: -10px
+	}
+
+	#main {
+		padding: 1% 1% 10% 1%;
+		background-color: var(--sec);
+		padding-bottom: 200%;
+		height: 100%
+	}
+
+	div.tab {
+		display: felx;
+		overflow: hidden;
+		margin: 0 -1% 0;
+		background-color: var(--bg);
+	}
+
+	div.tab button {
+		color: var(--text);
+		background-color: var(--bg);
+		font-size: 100%;
+		float: left;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		padding: 14px 16px;
+		transition: 0.3s;
+	}
+
+	div.tab button:hover {
+		background-color: var(--hov);
+	}
+
+	div.tab button.active {
+		background-color: var(--sec);
+	}
+
+	.tabcontent {
+		display: none;
+	}
+
+	.tabcontent {
+		-webkit-animation: fadeEffect 1s;
+		animation: fadeEffect 1s;
+	}
+
+	@-webkit-keyframes fadeEffect {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes fadeEffect {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+	.circle {
+		cursor: pointer;
+		position: fixed;
+		display: none;
+		pointer-events: none;
+		border-radius: 50%;
+		width: 25px;
+		height: 25px;
+		border-style: solid;
+		border-color: white;
+		border-width: 1%;
+		z-index: 1;
+		-webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+		-moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+		box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	}
+	#ccube {
+		position: relative;
+		z-index: 0;
+		user-select: none;
+		cursor: pointer;
+		border-radius: 5%;
+	}
+	#prev {
+		border-radius: 500px;
+		user-select: none;
+		position: relative;
+		margin: auto;
+		padding: 1%
+	}
+	#hue {
+			cursor: pointer;
+			-webkit-appearance: none;
+			margin: auto;
+			position: relative;
+			width: 250px;
+			background-color: transparent;
+		}
+	#hue::-webkit-slider-runnable-track {
+		height: 50%;
+		background: var(--main-bg-color);
+		background: -webkit-linear-gradient(left, red, orange, yellow, green, cyan, blue, violet, red);
+		background: -o-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+		background: -moz-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+		background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet, red);
+		border-radius: 50px;
+	}
+	#hue::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		border-radius: 50%;
+		width: 30px;
+		height: 30px;
+		margin-top: -10px;
+		border-style: solid;
+		border-color: white;
+		border-width: 1%;
+		-webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+		-moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+		box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+		background: var(--acc) !important;
+	}
+</style>
+<style type="text/css" id="acc">
+	:root {
+		--acc: #123!important
+	}
+</style>
+<style type="text/css" id="sty">
+	:root {
+		--bg: #212121;
+		--sec: #2b2b2b;
+		--text: #aaa;
+		--thumb: #5e5e5e;
+		--hov: #111;
+	}
+</style>
+<script type="text/javascript">
+	window.onload = function () {
+		document.getElementById("default").click()
+		updateStyle();
+		init();
+	};
+
+	document.onmouseup = function()	{ doUpdate = false; };
+	document.onmousemove = getPos;
+	document.touchend = function()	{ doUpdate = false; };
+	document.touchstart = function()	{ doUpdate = true; getPos(); };
+	document.touchmove = getPos;
+
+	window.onresize = function()	{ getPos(cx, cy); };
+	window.onscroll = function()	{ getPos(cx, cy); };
+	window.onclose = function()	{
+		try	{
+			connection.close();
+			c_AP.close();
+			c_STA.close();
+		}	catch(e)	{}
+	};
+
+	let connection;
+	let doUpdate = false;
+	let cx, cy;
+	let connected = false;
+
+	function updateStyle(c) {
+		let a;
+		if (c == null) {
+			let b = new Date();
+			a = b.getHours()
+		} else {
+			a = c
+		}
+		if (a > 8 && a < 17) {
+			document.getElementById("sty").innerHTML =
+				"	:root { --bg: #ccc; --sec: #eee; --text: #444; --thumb: #9D9D9D; --hov:#111;} "
+		} else {
+			document.getElementById("sty").innerHTML =
+				" 	:root { --bg: #212121; --sec: #2b2b2b; --text: #aaa; --thumb: #5e5e5e; --hov: #333;} "
+		}
+	}
+
+	function openTab(evt, cityName) {
+
+		let i, tabcontent, tablinks;
+
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+
+		tablinks = document.getElementsByClassName("tablinks");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active", "");
+		}
+
+		document.getElementById(cityName).style.display = "block";
+
+		try	{
+			draw();
+		}	catch(e)	{}
+
+		evt.currentTarget.className += " active";
+
+		document.getElementById("bt").value = cityName.slice(1);
+
+	}
+
+		function init() {
+			initWs();
+			//toSlide('slide1');
+			draw();
+			getPos(125, 125);
+		}
+
+		function initWs() {
+
+			try	{
+				let c_AP = new WebSocket('ws://192.168.4.1/ws');
+				let c_STA = new WebSocket('ws://192.168.178.90/ws');
+			
+
+			c_AP.onopen = function () {
+				if (!connected) {
+					connection = c_AP;
+					connected = true;
+					c_STA.close();
+					receiveWs();
+				}
+			};
+
+			c_STA.onopen = function () {
+				if (!connected) {
+					connection = c_STA;
+					connected = true;
+					c_AP.close();
+					receiveWs();
+				}
+			};
+			}	catch(e)	{}
+		}
+
+		function receiveWs()	{
+			connection.onmessage = function(event) {
+				console.log(event.data);
+				let a = JSON.parse(event.data);
+				console.log(a);
+				if(a.rgb !== undefined)	{
+					findColor(a.rgb[0], a.rgb[1], a.rgb[2]);
+				}
+			};
+		}
+
+		function showPwd() {
+			if (document.getElementById("Pwd").type == "password") {
+				document.getElementById("Pwd").type = "text";
+			} else {
+				document.getElementById("Pwd").type = "password";
+			}
+		}
+
+		function submitW() {
+			let ssid = document.getElementById("SSID").value;
+			let pwd = document.getElementById("Pwd").value;
+			if (ssid != "" || pwd != "")	{
+				console.log(JSON.stringify({ ssid: ssid, pwd: pwd}));
+				try	{
+					connection.send(JSON.stringify({ ssid: ssid, pwd: pwd}));
+				}	catch(e)	{}
+				
+			}			
+		}
+	
+		function submitD() {
+			let date = new Date();
+			let d =	{"year": date.getFullYear(), "month": date.getMonth() + 1, "day": date.getDate(), "hour": date.getHours(), "min": date.getMinutes(), "sec": date.getSeconds() };
+			console.log(JSON.stringify(d));
+			try	{
+				connection.send(JSON.stringify(d));
+			}	catch(e)	{}
+					
+		}
+
+		function draw() {
+			let canvas = document.getElementById("ccube");
+			let w = canvas.scrollWidth;
+			let h = canvas.scrollHeight;
+			let ctx = canvas.getContext("2d");
+			let hue = document.getElementById("hue").value;
+			hue = hue / 500.00;
+			for (let i = w; i >= 0; i--) {
+
+				let c0 = HSVtoRGB(hue, 0, i / w);
+				let c1 = HSVtoRGB(hue, 1, i / w);
+				let g = ctx.createLinearGradient(0, i, w, 0);
+				g.addColorStop(0, "rgb(" + c0.r + ", " + c0.g + ", " + c0.b + ")");
+				g.addColorStop(1, "rgb(" + c1.r + ", " + c1.g + ", " + c1.b + ")");
+				ctx.fillStyle = g;
+				ctx.fillRect(0, i, w, 1);	
+
+			}
+			getPos(cx, cy);
+		}
+
+		function mp(rect) {
+			let x = event.clientX - rect.left;
+			let y = event.clientY - rect.top;
+			return {
+				x: x,
+				y: y
+			};
+		}
+
+		function getPos(ax, ay) {
+			let use = Boolean(ax + 1 && ay + 1);
+			if (doUpdate || use) {
+				let prev = document.getElementById("prev");
+				let canvas = document.getElementById("ccube");
+				let rect = canvas.getBoundingClientRect();
+				let cursor = document.getElementById("c");
+				let hue = document.getElementById("hue").value;
+				hue = hue / 500.00;
+
+				if (use) {
+					cx = ax;
+					cy = ay;
+				} else {
+					let a = mp(rect);
+					cx = a.x;
+					cy = a.y;
+				}
+
+				cx = Math.min(Math.max(cx, 0), canvas.scrollWidth);
+				cy = Math.min(Math.max(cy, 0), canvas.scrollHeight);
+
+				let c = HSVtoRGB(hue, cx / canvas.scrollWidth, cy / canvas.scrollHeight);
+
+				let ctx = prev.getContext("2d");
+				ctx.fillStyle = "rgb(" + c.r + "," + c.g + "," + c.b + ")";
+				ctx.fillRect(0, 0, 1000, 1000);
+
+				cursor.style = "display: block; left: " + (cx + rect.left - 11) + "px; top: " + (cy + rect.top - 11) + "px; background-color: rgb(" + c.r + "," + c.g + "," + c.b + ");";
+				document.getElementById("acc").innerHTML = " :root { --acc: rgb(" + c.r + "," + c.g + "," + c.b + "); }";
+				console.log(JSON.stringify({ r: c.r, g: c.g, b: c.b}));
+				try {
+					connection.send(JSON.stringify({ r: c.r, g: c.g, b: c.b}));
+				} catch (e) {}
+
+			}
+		}
+
+		function findColor(r, g, b)	{
+			let canvas = document.getElementById("ccube");
+			let h, x, y;
+			let c = RGBtoHSV(r, g, b);
+			h = c.h;
+			x = c.s*canvas.scrollWidth;
+			y = c.v*canvas.scrollHeight;
+			console.log("hue: "+h+", x: "+x+", y: "+ y);
+			document.getElementById("hue").value = h * 500;
+			cx = x;
+			cy = y;
+			draw();
+			getPos(x, y);
+		}
+
+		function HSVtoRGB(h, s, v) {
+			let r, g, b, i, f, p, q, t;
+			if (arguments.length === 1) {
+				s = h.s, v = h.v, h = h.h;
+			}
+			i = Math.floor(h * 6);
+			f = h * 6 - i;
+			p = v * (1 - s);
+			q = v * (1 - f * s);
+			t = v * (1 - (1 - f) * s);
+			switch (i % 6) {
+				case 0:
+					r = v, g = t, b = p;
+					break;
+				case 1:
+					r = q, g = v, b = p;
+					break;
+				case 2:
+					r = p, g = v, b = t;
+					break;
+				case 3:
+					r = p, g = q, b = v;
+					break;
+				case 4:
+					r = t, g = p, b = v;
+					break;
+				case 5:
+					r = v, g = p, b = q;
+					break;
+			}
+			return {
+				r: Math.round(r * 255),
+				g: Math.round(g * 255),
+				b: Math.round(b * 255)
+			};
+		}
+
+		function RGBtoHSV(r, g, b) {
+			r /= 255, g /= 255, b /= 255;
+
+			var max = Math.max(r, g, b), min = Math.min(r, g, b);
+			var h, s, v = max;
+
+			var d = max - min;
+			s = max == 0 ? 0 : d / max;
+
+			if (max == min) {
+				h = 0; // achromatic
+			} else {
+				switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+
+			h /= 6;
+			}
+
+			return {
+				h: h,
+				s: s,
+				v: v
+			};
+		}
+</script>
+
+<body>
+	<div id="main" align="center">
+		<h1> Clock
+			<i> Setup </i>
+			Thing
+		</h1>
+		<div class="tab">
+			<button id="default" type="button" class="tablinks" onclick="openTab(event, 'a1')"	> Update Time	</button>
+			<button type="button" class="tablinks" onclick="openTab(event, 'a2')"				> Set Led Color		</button>
+			<button type="button" class="tablinks" onclick="openTab(event, 'a3')"				> Settings		</button>
+			<!-- <button type="button" class="tablinks" onclick="openTab(event, 'a4')"				> Chase 	</button>
+			<button type="button" class="tablinks" onclick="openTab(event, 'a5')"				> Multi		</button> -->
+		</div>	
+			<input type="text" name="mode" id="bt" style="display:none" value="1">
+	
+			<div id="a1" class="tabcontent" style="display: block">
+				<h3>Update Time</h3>
+				<p>By clicking the Update Button the time of the device you are using is sent to the clock.</p>
+				
+				<button class="b" onclick="submitD();"> Use device time </button> <br>
+				<button class="b" onclick="submitD();"> Use NTP </button>
+
+			</div>
+	
+			<div id="a2" class="tabcontent" style="display: none">
+				<h3>Set Led Color</h3>
+				<br>
+				<div style="position: relative;">
+					<div class="circle" id="c"></div>
+					<canvas id="ccube" width="250%" height="250%" onmousedown="doUpdate = true; getPos();"> </canvas>
+					<br>
+					<canvas id="prev" width="250%" height="30%" style="position: relative"> </canvas>
+					<br>
+					<input type="range" min="0" max="500" id="hue" oninput="draw();">
+				</div>
+			</div>
+		
+			<div id="a3" class="tabcontent" style="display: none">
+				<h3>Settings</h3>
+				<p>WiFi</p>
+				<span style="display: block" >You can also connect the clock to an existing WiFi Network to update the timer over the internet for more preceice timing. However this will require more power due to the constant WiFi connection, thus it is recommended to plug the clock into the supplied wall plug.</span>
+				<div id="s2_b" class="center">
+						<input type="text" id="SSID" placeholder="SSID" name="ssid" required title="Name of the Network">
+						<br>
+						<input type="password" id="Pwd" placeholder="Password" name="pwd" pattern=".{8,}" title="8 characters minimum">
+						<br> Show Password
+						<input onClick="showPwd()" type="checkbox">
+					</div>
+				<button class="b" onClick="submitW();">Submit</button>
+			</div>
+	</div>
+</body>
+
+</html>

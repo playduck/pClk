@@ -1,0 +1,752 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<title>Untitled Document</title>
+<style type="text/css">
+	
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-color: var(--bg);
+	color: var(--text);
+	font-size: 1.25em;
+	font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", "serif";
+	transition: 0.3s;
+}
+::selection {
+	background: var(--acc);
+}
+::-moz-selection {
+	background: var(--acc);
+}
+a {
+	color: var(--text);
+}
+#top {
+	background-color: var(--sec);
+	padding: 10px;
+	position: relative;
+	padding-left: 3.5%;
+}
+
+#act {
+	cursor: not-allowed;
+	color: var(--sec)!important;
+	background-color: var(--hov)!important;
+}
+#main {
+	display: table;
+    width: 100%;
+	padding-bottom: 100%;
+	margin: 1.5%;
+	margin-left: 3%;
+	overflow-y: hidden;
+	table-layout: fixed;
+	transition: 0.3s;
+}
+.tab {
+	width: auto;
+	display: table-cell;
+	padding: 16px;
+	transition: 0.3s;
+}
+.tab p {
+	max-width: 70%;
+}
+	
+@media only screen and (max-width: 1300px) {
+	body {
+		overflow-y: visible;
+	}
+	.tab { 
+		display: block;
+		width: 100%;
+	}
+}
+.acc {
+	background-color: var(--acc);
+	width: 100%;
+	padding-bottom: 20px;
+	border-radius: 500px;
+}
+input:focus, button:focus{
+	outline: none;
+}
+.circle {
+	cursor: pointer;
+	position: fixed;
+	display: none;
+	pointer-events: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	border-style: solid;
+	border-color: white;
+	border-width: 1%;
+	z-index: 1;
+	transition: margin 0.3s;
+	-webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	-moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+}
+#ccube {
+	position: relative;
+	margin: 1% 0;
+	user-select: none;
+	cursor: pointer;
+	border-radius: 5%;
+}
+#prev {
+	cursor: pointer;
+	border-radius: 500px;
+	border: none;
+	width: 100%;
+	max-width: 245px;
+	margin: 10px 0;
+	margin-bottom: -30px;
+	background-color: var(--acc);
+}
+ input[type="color"]::-webkit-color-swatch-wrapper {
+ 	border-radius: 500px;
+ 	padding: 0;
+}
+input[type="color"]::-moz-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+ input[type="color"]::-webkit-color-swatch {
+ 	border-radius: 500px;
+ 	padding: 8px;
+ 	border: none;
+}
+#hue {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 250px;
+	background-color: transparent;
+}
+ #hue::-webkit-slider-runnable-track {
+	 height: 50%;
+	 background: var(--bg);
+	 background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -webkit-linear-gradient(left, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -o-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 background: -moz-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
+	 border-radius: 50px;
+}
+ #hue::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	 border-radius: 50%;
+	 width: 30px;
+	 height: 30px;
+	 margin-top: -11px;
+	 border-style: solid;
+	 border-color: white;
+	 border-width: 1%;
+	 -webkit-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 -moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
+	 background: var(--acc) !important;
+}
+button, input[type="button"], input[type="submit"] {
+	font-size: 0.9em;
+	cursor: pointer;
+	border-radius: 500px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: var(--acc);
+	margin: auto;
+	margin-top: 3%;
+	color: var(--text);
+	background-color: var(--sec);
+	padding: 7px 15px;
+	transition: background-color 0.3s;
+	transition: color 0.3s;
+}
+button:hover, input[type="button"]:hover, input[type="submit"]:hover{
+	background-color: var(--hov);
+	color: var(--text);
+}	
+button:active, input[type="button"]:active, input[type="submit"]:active {
+	background-color: var(--bg);
+}
+input[type="text"], input[type="password"], input[type="number"], input[type="date"], input[type="time"] {
+	padding: 6px;
+	border-radius: 50px;
+	border: none;
+	margin: 8px 0;
+	background-color: var(--sec);
+	color: var(--text);
+}
+input[type="range"] {
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin: auto;
+	position: relative;
+	width: 40%;
+	background-color: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track  {
+	height: 20%;
+	background-color: var(--thumb);
+	margin: auto;
+	border-radius: 50px;
+}
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	margin-top: -10px;
+	border-style: solid;
+	border-color: var(--thumb);
+	border-width: 1%;
+	background: var(--acc) !important;
+}
+input[type="checkbox"] {
+	visibility: hidden;
+}
+
+input[type="checkbox"] + label {
+	cursor: pointer;
+	position: absolute;
+	margin-top: 2px;
+	margin-left: -25px;
+	border-radius: 50px;
+	border: 3px solid var(--thumb);
+	background-color: var(--sec);
+	height: 20px;
+	width: 20px;
+	transition: 0.2s;
+}	
+input[type="checkbox"]:checked+label {
+	border-color: var(--acc);
+	background-color: var(--acc);
+}	
+k {
+	margin-left: 0.3em;
+}
+.snackbar {
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #52B55E;
+    color: #EEEEEE;
+    text-align: center;
+    border-radius: 200px;
+	border: solid 5px var(--sec);
+    padding: 16px;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+	transition: 0.5s;
+	opacity: 0;
+}
+
+.snackbar.show {
+	opacity: 1;
+}
+	
+</style>
+<style type="text/css" id="acc">
+:root {
+	--acc: #204040!important
+}
+</style>
+<style type="text/css" id="sty">
+:root {}
+</style>
+		
+
+<script type="text/javascript">
+	let doUpdate = false;
+	let global_hue; 
+	let global_cx, global_cy;
+	let connection;
+	let connected;
+	let c_AP, c_STA;
+	
+	window.onload = function ()	{
+		initWs();
+		updateStyle();
+		//changeTab("L");
+		//window.scroll(0,0);
+		findColor( Math.random()*255, Math.random()*255, Math.random()*255, false );
+		//draw(global_hue);
+		/*loop();*/
+	};
+	
+	window.onmousemove = function(event)	{
+		if(doUpdate)	{
+			document.body.style.cursor = "pointer";
+			getColor(global_hue, event.clientX, event.clientY);
+		}
+	};
+	window.onmouseup	= function()	{
+		doUpdate = false;
+		document.body.style.cursor = "auto";
+	};
+	window.onscroll	= function()	{
+		getNeColor();
+	}
+	window.onresize = function()	{
+		getNeColor();
+	};
+	window.onclose = function()		{
+		closeWs();
+	};
+	
+	function loop()	{
+		if(!doUpdate)	{
+		let canvas	= document.getElementById("ccube");
+		let w = canvas.scrollWidth;
+		let h = canvas.scrollHeight;
+		let ell;
+			
+		/*let damp = 0.3;
+			
+		global_cx += damp * Math.random() * w - damp * Math.random() * w;
+		global_cy += damp * Math.random() * h - damp * Math.random() * h;
+			
+			if(Math.random() > 0.83)
+				ell =  document.getElementById("hue").value--;
+			else
+				ell =  document.getElementById("hue").value++;
+				*/
+		ell =  document.getElementById("hue").value ++;
+		if(ell >= 360)	{
+			document.getElementById("hue").value = 2;
+		}	else if(ell <= 1)	{
+			document.getElementById("hue").value = 359;
+		}
+		global_hue = (ell);
+		draw(global_hue);
+		getNeColor();
+		setTimeout(loop, 20);
+		}
+	}
+	
+	function sendWs(a)	{
+		try {
+			console.log(a);
+			console.log( JSON.stringify(a) );
+			connection.send(JSON.stringify(a));
+		} catch (e) {}
+	}
+	
+	function closeWs()	{
+		try	{
+			connection.close();
+			c_AP.close();
+			c_STA.close();
+		}	catch(e)	{}
+	}
+	
+	function initWs() {
+
+			try	{
+				c_AP = new WebSocket('ws://192.168.4.1/ws');
+				c_STA = new WebSocket('ws://192.168.178.90/ws');
+			
+
+			c_AP.onopen = function () {
+				if (!connected) {
+					connection = c_AP;
+					connected = true;
+					c_STA.close();
+					receiveWs();
+					triggerSnackbar("con");
+				}
+			};
+
+			c_STA.onopen = function () {
+				if (!connected) {
+					connection = c_STA;
+					connected = true;
+					c_AP.close();
+					receiveWs();
+					triggerSnackbar("con");
+				}
+			};
+			}	catch(e)	{
+				console.log(e);	
+			}
+		}
+	
+		function receiveWs()	{
+			connection.onmessage = function(event) {
+				console.log("Received: "+ event.data);
+				if(event.data === "__s__" )	{
+					triggerSnackbar("success");
+					return;
+				}
+				let a = JSON.parse(event.data);
+				console.log(a);
+				if(a.rgb_led !== undefined)	{
+					findColor(a.rgb_led[0], a.rgb_led[1], a.rgb_led[2], false);
+				}
+			};
+	}
+
+	function sendWiFi()	{
+		let s	= document.getElementById("s").value;
+		let p	= document.getElementById("p").value;
+		sendWs( {"s_ssid":s, "s_pwd":p} );
+	}
+	
+	function sendDeviceTime()	{
+		let d = new Date();
+		sendWs( { "deviceTime":true, "time":[d.getYear()	, d.getMonth(), d.getDate(), d.getDay(), d.getHours(), d.getMinutes(), d.getSeconds()]} );
+	}
+	function sendNTP()	{
+		let gmtOff = document.getElementById("gmtoff").value /100.0 * 3600.0;
+		let dayOff = document.getElementById("dayoff").value /100.0 * 3600.0;
+		sendWs( {"ntpTime":true, "gmtOffset_sec":gmtOff, "daylightOffset_sec": dayOff} );
+	}
+	
+	function sendALR()	{
+		let re = 0;
+		for(let i = 0; i < 7; i++)	{
+			re = re | ( document.getElementById("wk"+i).checked ? 1 : 0 ) << i;
+		}
+		let h, m ,s;
+		let val = document.getElementById("alr").value;
+		if(val === "")
+			return;
+		h = parseInt(val.slice(0,2));
+		m = parseInt(val.slice(3,5));
+		let vol = document.getElementById("vol").value;
+		sendWs( {"re":re, "a_h":h, "a_m":m, "a_vol":vol} );
+	}
+	
+	function toggleOp(a, b)	  {
+		if(a == null)	{
+			a = document.getElementById(b).style.opacity == 1 ? false : true;
+		}
+		if(a)	{
+			document.getElementById(b).style.display="";
+			setTimeout(function(b) {document.getElementById(b).style.opacity = 1;}, 10, b);
+		}	else	{
+			document.getElementById(b).style.opacity = 0;
+			setTimeout(function(b) {document.getElementById(b).style.display="none";}, 200, b);
+		}
+	}
+	
+	function getNeColor()	{
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+		return getColor(global_hue, global_cx+rect.left, global_cy+rect.top, false);
+	}
+
+	function updateStyle(c) {
+		let a;
+		if (c == null) {
+			let b = new Date();
+			a = b.getHours()
+		} else {
+			a = c
+		}
+		if (a > 5 && a < 20) {
+			document.getElementById("sty").innerHTML =
+				":root { --bg: #e4e4e4; --sec: #eee; --text: #444; --thumb: #9D9D9D; --hov: #e5e5e5;} "
+		} else {
+			document.getElementById("sty").innerHTML =
+				":root { --bg: #222; --sec: #333333; --text: #aaa; --thumb: #5e5e5e; --hov: #424242;} "
+		}
+	}
+	
+	function draw(hue)	{
+		let canvas	= document.getElementById("ccube");
+		let w = canvas.scrollWidth;
+		let h = canvas.scrollHeight;
+		let ccube	= document.getElementById("ccube").getContext("2d");
+		let infill = 4;
+		hue /= 360.0;
+
+		for (let i = 0; i <= h; i+=infill) {
+
+			let a = HSVtoRGB(hue, 0, i/h);
+			let b = HSVtoRGB(hue, 1, i/h);
+
+			let g = ccube.createLinearGradient(0, i, w, i);
+			g.addColorStop(0, "rgb("+a.r+","+a.g+","+a.b+")");
+			g.addColorStop(1, "rgb("+b.r+","+b.g+","+b.b+")");
+			ccube.fillStyle = g;
+			ccube.fillRect(0, h-i, w, infill);	
+		}
+	}
+
+	function getColor(h, x, y, send=true)	{
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+		let cursor = document.getElementById("c");
+
+		let cx = x - rect.left;
+		let cy = y - rect.top;
+
+		cx = Math.min(Math.max(cx, 0), canvas.scrollWidth	);
+		cy = Math.min(Math.max(cy, 0), canvas.scrollHeight	);
+
+		global_cx = cx;
+		global_cy = cy;
+
+		let c = HSVtoRGB(h/360, cx / canvas.scrollWidth,(canvas.scrollHeight- cy) / canvas.scrollHeight);
+		setPreview(c);
+		cursor.style = "display: block; left: " + (cx + rect.left - 11) + "px; top: " + (cy + rect.top - 11) + "px; background-color: rgb(" + c.r + "," + c.g + "," + c.b + ");";
+		if(send)
+			sendWs( {rgb:[c.r, c.g, c.b]} );
+		return  {r:c.r, g:c.g, b:c.b };
+	}
+
+	function setPreview(c)	{
+		let r = c.r.toString(16).length === 1 ? "0"+String(c.r.toString(16)) : c.r.toString(16);
+		let g = c.g.toString(16).length === 1 ? "0"+String(c.g.toString(16)) : c.g.toString(16);
+		let b = c.b.toString(16).length === 1 ? "0"+String(c.b.toString(16)) : c.b.toString(16);
+		document.getElementById("prev").value = "#"+r+""+g+""+b;
+		document.getElementById("acc").innerHTML = " :root { --acc: rgb(" + c.r + "," + c.g + "," + c.b + "); }";
+	}
+
+	function findColor(r, g, b, send=true)	{
+		
+		let canvas = document.getElementById("ccube");
+		let rect = canvas.getBoundingClientRect();
+
+		let h, x, y;
+		let c = RGBtoHSV(r, g, b);
+		h = c.h * 360;
+		if(h !== 0)	{
+			global_hue = h;
+		}
+		document.getElementById("hue").value = global_hue;
+		draw(global_hue);
+		x = c.s*canvas.scrollWidth + rect.left;
+		y = canvas.scrollHeight - c.v*canvas.scrollHeight + rect.top;
+		getColor(global_hue, x, y, send);
+	}
+
+	function updateHue()	{
+		let canvas = document.getElementById("ccube");
+		doUpdate = false;
+		global_hue = document.getElementById("hue").value;
+		draw(global_hue);
+		let c = HSVtoRGB(global_hue / 360, global_cx / canvas.scrollWidth, (canvas.scrollHeight - global_cy) / canvas.scrollHeight);
+		findColor(c.r, c.g, c.b);
+	}
+
+	function findHex(s)	{
+		s = s.slice(1,7);
+		if(s.length < 6)	{
+			s = "0"+String(s);
+		}
+		
+		let r = parseInt(s.slice(0,2), 16);
+		let g = parseInt(s.slice(2,4), 16);
+		let b = parseInt(s.slice(4,6), 16);
+
+		findColor(r,g,b);
+	}
+		
+	function HSVtoRGB(h, s, v)	{
+		let r, g, b, i, f, p, q, t;
+		if (arguments.length === 1) {
+			s = h.s, v = h.v, h = h.h;
+		}
+		i = Math.floor(h * 6);
+		f = h * 6 - i;
+		p = v * (1 - s);
+		q = v * (1 - f * s);
+		t = v * (1 - (1 - f) * s);
+	switch (i % 6) {
+		case 0:
+			r = v, g = t, b = p;
+			break;
+		case 1:
+			r = q, g = v, b = p;
+			break;
+		case 2:
+			r = p, g = v, b = t;
+			break;
+		case 3:
+			r = p, g = q, b = v;
+			break;
+		case 4:
+			r = t, g = p, b = v;
+			break;
+		case 5:
+			r = v, g = p, b = q;
+			break;
+		}
+		return {
+			r: Math.round(r * 255),
+			g: Math.round(g * 255),
+			b: Math.round(b * 255)
+		};
+	}
+
+	function RGBtoHSV(r, g, b) {
+			r /= 255, g /= 255, b /= 255;
+
+		var max = Math.max(r, g, b), min = Math.min(r, g, b);
+		var h, s, v = max;
+
+		var d = max - min;
+		s = max == 0 ? 0 : d / max;
+
+		if (max == min) {
+			h = 0;
+		} else {
+			switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+
+		h /= 6;
+		}
+
+		return {
+			h: h,
+			s: s,
+			v: v
+		};
+	}
+			
+	function changeTab(n)	{
+		for(let i = 0; i < document.getElementsByClassName("tab").length; i++)	{
+			let current = document.getElementsByClassName("tab")[i];
+			current.style.display = "";
+		}
+		
+		for(let i = 0; i < document.getElementsByClassName("navbutton").length; i++)	{
+			let current = document.getElementsByClassName("navbutton")[i];
+			if(current.name === n)	{
+				current.id = "act";
+			}	else	{
+				current.id = "";
+			}
+		}
+		try{
+			draw(global_hue);
+		} catch(e)	{}
+	}
+		
+	function revealPass()	{
+		if (document.getElementById("p").type === "password")
+			document.getElementById("p").type = "text";
+		else
+			document.getElementById("p").type = "password";
+	}
+
+	function triggerSnackbar(b)	{
+		let a = document.getElementById(b);
+		a.className += " show";
+		setTimeout( f => { a.className = a.className.replace("show", ""); }, 2400);
+	}
+	
+	</script>
+	
+</head>
+
+<body stye="margin: 0; pading: 0">
+<div id="top"> <span style="font-size:30px;"> Clock Setup <i>Thing</i></span> </div>
+<div class="acc" style="margin-bottom: -30px; border-radius: 0;"></div>
+<div id="sdnav" class="sidenav">
+	<div class="acc"></div>
+</div>
+	
+<div class="snackbar" id="success">	&#10004; Command received sucessfully</div>
+<div class="snackbar" id="con" style="background-color: #5CA9E8"> &#128246; Connection Established</div>
+	
+<div id="main">
+	<div class="tab" id="L"	>
+		<h1>Lighting</h1>
+		<p>Change the devices LED lighting! Note: The device may not properly render some colors! Click the Apply button to save the current color to the builtin conifig to save the lighting settings!</p>
+		<div class="circle" id="c"></div>
+		<canvas id="ccube" width="250%" height="250%" onmousedown="doUpdate = true;" onclick="getColor(global_hue, event.clientX, event.clientY);"> </canvas>
+		<br>
+		<div >
+				<input type="color" id="prev" onchange="findHex(this.value)">
+			</div>
+		<br>
+		<input type="range" min="1" max="360" id="hue" oninput="updateHue()">
+
+	</div>
+	<div class="tab" id="W"	>
+		<h1>WiFi</h1>
+		<p>Change the devices WiFi log-in information. To enter acesspoint mode, simply press the devices main physical button during startup.</p>
+			<input type="text" id="s" placeholder="SSID"> <br>
+			<input type="password" id="p" placeholder="password"> <br>
+			<input type="checkbox" id="reveal" onClick="revealPass()">
+			<label for="reveal"></label> <k style="margin-left: 0.6em;">Reveal Password</k> <br>
+			<input type="button" onClick="sendWiFi();" value="Submit">	
+
+	
+	</div>
+	<div class="tab" id="T"	>
+		<h1>Time</h1>
+		
+		<div style="margin-bottom: 8%">
+			<p style="margin: 2% 0">Update the internal time by either setting it to this devices time or to the global <a target="_blank" href="http://www.pool.ntp.org/en/"> Network Time Protocol (NTP)</a>.</p>
+			<button onClick="toggleOp(false,'NTPS'); sendDeviceTime();" style="margin-right:0.9em;">Use device time</button>
+			<button onClick="toggleOp(true,'NTPS');">Use NTP</button>
+		</div>
+		
+		<div id="NTPS" style="opacity: 0; display: none; transition: 0.3s">
+			<div class="acc" style="padding-bottom: 5px; max-width: 85%"></div>
+			<div style="margin-top: 6%">
+				<p>To use NTP set your local timezone and daylight saving time in houres. The expected input is: <code>HHmm</code>. One Hour and a half hour offset would be <code>0130</code>.</p>
+					<input id="gmtoff" type="number" style="width: 150px" max="9999"> GMT offset <br>
+					<input id="dayoff" type="number" style="width: 150px" max="9999"> Daylight Savings <br>
+					<input type="button" onClick="sendNTP();" value="Submit">	
+			</div>
+		</div>
+	</div>	
+	<div class="tab" id="A"	>
+		<h1>Alarm</h1>
+		<p>Change the devices Alarm</p>
+		
+		<input type="checkbox" id="enable" onClick="toggleOp(null,'ALRS');">
+		<label for="enable"></label> <k>Enable Alarm</k> <br>
+		<div id="ALRS" style="opacity: 0; display:none; transition: 0.3s;">
+			<div class="acc" style="padding-bottom: 5px; max-width: 85%; margin: 6% 0;"></div>
+			Repeat every: <br>
+			<input type="checkbox" id="wk0">
+			<label for="wk0"></label> <k>Monday</k> <br>
+			<input type="checkbox" id="wk1">
+			<label for="wk1"></label> <k>Tuesday</k> <br>
+			<input type="checkbox" id="wk2">
+			<label for="wk2"></label> <k >Wednesday</k> <br>
+			<input type="checkbox" id="wk3">
+			<label for="wk3"></label> <k>Thursday</k> <br>
+			<input type="checkbox" id="wk4">
+			<label for="wk4"></label> <k>Friday</k> <br>
+			<input type="checkbox" id="wk5">
+			<label for="wk5"></label> <k>Saturday</k> <br>
+			<input type="checkbox" id="wk6">
+			<label for="wk6"></label> <k>Sunday</k> <br>
+			at <code>HH:mm</code>
+			<input type="time" id="alr" style="margin-left: 10px;"> <br>
+			Volume	<input type="range" id="vol" style="margin-left: 10px; max-width: 150px" min="0" max="6" step="1"> <br>
+			<input type="button" onClick="sendALR();" value="Submit">
+		</div>
+	</div>
+	<div class="tab" id="S"	>
+		<h1>System</h1>
+		<p>Gerneral System settings</p>
+		<input type="button" value="Save Settings">
+		<p>All settings are automatically saved before a system restart.</p>
+		<input type="button" value="Restart" onClick="sendWs({'reboot':true});">
+		<p>The System automatically restarts daily at <code>00:01h</code> and after closing this site.</p>
+		<input type="button" value="Reconnect" onClick="closeWs(); initWs();">
+	</div>
+</div>
+</body>
+</html>
