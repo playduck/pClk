@@ -137,7 +137,7 @@
 		h = parseInt(val.slice(0,2));
 		m = parseInt(val.slice(3,5));
 		let vol = document.getElementById("vol").value;
-		sendWs( {"re":re, "a_h":h, "a_m":m, "a_vol":vol} );
+		sendWs( {"alarm":true, "re":re, "a_h":h, "a_m":m, "a_vol":vol} );
 	}
 	
 	function sendTz()	{

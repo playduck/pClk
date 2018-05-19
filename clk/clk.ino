@@ -80,13 +80,15 @@ String s_ssid;							// STA SSID as String
 String s_pwd;							// STA PWD as String
 
 uint8_t disp[4] = {0, 0, 0, 0};			// number for each led segment
-uint8_t timer;							// loop update timer
+uint16_t timer;							// loop update timer
 
 const char* ntpServer[3] = { "pool.ntp.org", "de.pool.ntp.org", "1.pool.ntp.org" };	// NTP servers
 int  gmtOffset_sec = 3600;				// Offset from GMT in seconds
 int  daylightOffset_sec = 3600;			// Daylight savings time in seconds
 String tz;								// Timezone
+uint8_t alarm_h, alarm_m;				// Alarm Houres and Minutes
 uint8_t alarm_repeat;					// Alarm Repeat
+bool handleAlarm;						// handles an alarm
 boolean useNTP;							// use NTP or device Time
 
 uint8_t rgb_led[3];						// stores RGB led values as R, G, B
@@ -115,6 +117,7 @@ void IRAM_ATTR ISR_button() {
 void IRAM_ATTR ISR_RTC()	{
 	portENTER_CRITICAL_ISR(&mux);
 	Serial.printf("[ISRRTC]\n");
+	handleAlarm = true;
 	portEXIT_CRITICAL_ISR(&mux);
 }
 
@@ -160,14 +163,10 @@ void setup() {
 
 	playTune(0);
 
-	searchWiFi();
-	startWiFi();
-	initServer();
-
  	Serial.printf("[SETUP] Starting I2C\n");
 
 	Wire.begin(SDA, SCL);
-	Wire.setClock(500000);	// in kHz
+	Wire.setClock(400000);	// in kHz
 	Wire.setTimeout(1000);
 	// 0x57 - AT24C32 EEPROM
 	// 0x68 - DS3231 RTC
@@ -181,6 +180,10 @@ void setup() {
 	struct tm timeinfo = I2C_getRTC();
 	Serial.println(&timeinfo, "[SETUP] %A, %B %d %Y %H:%M:%S");
 
+	searchWiFi();
+	startWiFi();
+	initServer();
+
 	if(useNTP)	{
 		setToNTPTime();
 
@@ -190,7 +193,7 @@ void setup() {
 	}
 
 	attachInterrupt(digitalPinToInterrupt(H_BUTTON), ISR_button, FALLING);
-	attachInterrupt(digitalPinToInterrupt(RTC_INT), ISR_RTC, RISING);
+	attachInterrupt(digitalPinToInterrupt(RTC_INT), ISR_RTC, FALLING);
 
 	updateLed();
 	playTune(1);
@@ -224,15 +227,18 @@ void coreloop( void * pvParameters )	{
 	// 	shift(disp[2], 2);
 	// 	shift(disp[3], 3);
 
-	if (shouldReboot) {
+	if(shouldReboot) {
 		saveInit(SPIFFS);
 		Serial.printf("[LOOP1] Rebooting...\n");
 		delay(100);
 		ESP.restart();
 	}
-	//updateLed();
+	if(handleAlarm)	{
+		I2C_evalAlarm();
+		handleAlarm = false;
+	}
 
-	if(timer % 50 == 0)	{
+	if(timer % 512 == 0)	{
 		struct tm timeinfo = I2C_getRTC();
 		disp[0] = timeinfo.tm_min % 10;
 		disp[1] = timeinfo.tm_min / 10;
@@ -241,10 +247,9 @@ void coreloop( void * pvParameters )	{
 		check_temp();
 	}
 	timer++;
+	vTaskDelay(50);
 
 	}
-
-	vTaskDelay(100);
 	
 }
 
@@ -441,7 +446,7 @@ void I2C_receive()	{
 void I2C_setTime( tm timeinfo )	{
 
 	//Serial.printf("\n Setting Time to %i:%i:%i on %i %i/%i/%i \n", hr, min, sec, day, yr, mon, dte);
-	Serial.println(&timeinfo, "[I2CSETTIME] %A, %B %d %Y %H:%M:%S \n");
+	Serial.println(&timeinfo, "[I2CSETTIME] %A, %B %d %Y %H:%M:%S");
 	I2C_resetRTCPointer();
 
 	vTaskDelay(100);
@@ -463,30 +468,70 @@ void I2C_setTime( tm timeinfo )	{
 	I2C_resetRTCPointer();
 }
 
-void I2C_setAlarm(uint8_t hour, uint8_t min)	{
+void I2C_setAlarm()	{
 
-	uint8_t day = I2C_getRTC().tm_wday;
+	tm timeinfo = I2C_getRTC();
+	uint8_t day = timeinfo.tm_wday % 8;
+	bool notToday = true;
+	
+	Serial.printf("[I2CSETALARM] %i, %i, %i %i \n", timeinfo.tm_hour, timeinfo.tm_min, (1<<(day+1) & alarm_repeat), (1<<(day-1)) );
+
+	if(timeinfo.tm_hour <= alarm_h && timeinfo.tm_min < alarm_m && (1<<(day-1) & alarm_repeat) > 0 )	{
+		notToday = false;
+		Serial.printf("[I2CSETALARM] Alarm will trigger today (%i)\n", day);
+	}
 
 	I2C_resetRTCPointer();
 
-	do	{
+	while(notToday)	{
 		day = day % 7;
 		if( (1<<day & alarm_repeat) > 0 )	{
 			day = (day % 7 ) + 1;
+			Serial.printf("[I2CSETALARM] Alarm will not trigger today \n");
 			break;
 		}
 		day++;
-	}	while(true);
+	}	
 	
+	Serial.printf("[I2CSETALARM] Alarm will trigger on %i at %i:%i!\n",day, alarm_h, alarm_m);
+
 	Wire.beginTransmission(I2C_RTC);
 
 	Wire.write(0x07);
-	Wire.write(0x00);
-	Wire.write(decToBcd(min));
-	Wire.write(decToBcd(hour)	& 0b00111111 );
-	Wire.write(decToBcd(day)	& 0b01000000 );
+	Wire.write(0b00000000);
+	Wire.write(decToBcd(alarm_m)	& 0b01111111 );
+	Wire.write(decToBcd(alarm_h)	& 0b00111111 );
+	Wire.write( ( decToBcd(day)		& 0b01111111 ) | 0b01000000 );
 
-	Wire.endTransmission(false);
+	if( Wire.endTransmission(false) == 0 )
+		Serial.printf("[I2CSETALARM] Success!\n");
+
+	I2C_resetRTCPointer();
+
+}
+
+void I2C_evalAlarm()	{
+
+	I2C_resetRTCPointer();
+	
+	playTune(2);
+	Wire.requestFrom(I2C_RTC, 0x10);
+	uint8_t cw = 0;
+
+	while(Wire.available())	{
+		cw = Wire.read();
+	}
+
+	if( (cw & 0b00000010) > 0) {
+		Serial.printf("[I2CEVALALARM] A2F\n");	// Hourly Alarm
+	}
+	if( (cw & 0b00000001) > 0) {
+		Serial.printf("[I2CEVALALARM] A1F\n");	// User Alarm
+	}
+
+	I2C_resetRTCPointer();
+	I2C_configRTC();
+
 }
 
 tm I2C_getRTC()	{
@@ -521,6 +566,9 @@ tm I2C_getRTC()	{
 		}
 		i++;
 	}
+
+	Serial.println(&timeinfo, "[I2CGETRTC] %A, %B %d %Y %H:%M:%S");
+
 	I2C_resetRTCPointer();
 
 	return timeinfo;
@@ -531,13 +579,13 @@ void I2C_configRTC()	{
 	Wire.beginTransmission(I2C_RTC);
 	
 	Wire.write(0x0B);
-	Wire.write(0x00);
+	Wire.write(0b00000000);
 	Wire.write(0b10000000);
 	Wire.write(0b10000000);
 	Wire.write(0b10000111);
 	Wire.write(0b00000100);
 
-	if( Wire.endTransmission(false) == 1 )
+	if( Wire.endTransmission(false) == 0 )
 		Serial.printf("[I2CCONFIGRTC] Success!\n");
 
 	I2C_resetRTCPointer();
@@ -622,6 +670,10 @@ void saveInit(fs::FS &fs)	{
 	root["useW"] = useWifi;
 	root["ntpTime"] = useNTP;
 
+	root["re"] = alarm_repeat;
+	root["a_h"] = alarm_h;
+	root["a_m"] = alarm_m;
+
 	JsonArray& rgb = root.createNestedArray("rgb");
 	rgb.add(rgb_led[0]);
 	rgb.add(rgb_led[1]);
@@ -660,6 +712,14 @@ void evalJson(String json)	{
 	//gmtOffset_sec		=	root.containsKey("gmtOff")	? root["gmtOff"].as<int>() : gmtOffset_sec;
 	//daylightOffset_sec	=	root.containsKey("dayOff")	? root["dayOff"].as<int>() : daylightOffset_sec;
 	tz					=	root.containsKey("TZC")		? root["TZC"].as<String>() : tz;
+
+	if(root["alarm"].as<bool>())	{
+		alarm_repeat = root["re"].as<uint8_t>();
+		alarm_h = root["a_h"].as<uint8_t>();
+		alarm_m = root["a_m"].as<uint8_t>();
+		//TODO implement volume
+		I2C_setAlarm();
+	}
 
 	if(root["deviceTime"].as<bool>())	{
 		struct tm timeinfo;	//Set RTC to received time
@@ -770,7 +830,7 @@ void playTune(uint8_t a)	{
 			vTaskDelay(300);
 			break;
 		case 2:
-			ledcWriteNote(channel[3], NOTE_C, 3);
+			ledcWriteNote(channel[3], NOTE_Cs, 3);
 			ledcWrite(channel[3], 50); 
 			vTaskDelay(150);
 			break;
