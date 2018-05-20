@@ -37,9 +37,7 @@
 #include "Wire.h"
 #include <sys/time.h>
 #include <driver/adc.h>
-#include <Adafruit_NeoPixel.h>
-
-#define DIGITAL_LED 1
+#include <NeoPixelBus.h>
 
 #define NUM_LEDS 12
 #define DATA_PIN 27
@@ -68,9 +66,8 @@
 extern "C" {
 #endif
 
-#ifdef DIGITAL_LED
-	Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS, DATA_PIN, NEO_GRBW + NEO_KHZ800);
-#endif
+
+NeoPixelBus<NeoGrbwFeature, Neo800KbpsMethod> strip(NUM_LEDS, DATA_PIN);
 
 AsyncWebServer server(80);				// Async Webserver at port 80
 AsyncWebSocket ws("/ws");				// Websocets at ws://[esp ip]/ws
@@ -100,12 +97,12 @@ uint8_t alarm_repeat;					// Alarm Repeat
 bool handleAlarm;						// handles an alarm
 boolean useNTP;							// use NTP or device Time
 
-uint8_t rgb_led[3];						// stores RGB led values as R, G, B
+float rgb_led[3];						// stores RGB led values as R, G, B
 bool useWifi;							// WiFi STA = true, WiFi AP = false
 volatile bool shouldReboot = false;		// sets Reboot flag, executed in core 0 main loop
 
 const int freq = 12000;					// led pwm driver frequency
-const uint8_t channel[4] = {0,1,2,3};	// ledc lib channels (R, G, B, Speaker)
+const uint8_t channel[1] = {0};			// ledc lib channel(s) currently only speaker is used
 const uint8_t resolution = 8;			// ledc lib "dac" resolution in bits
 
 #ifdef __cplusplus
@@ -134,6 +131,7 @@ void IRAM_ATTR ISR_RTC()	{
 void setup() {
 
 	Serial.begin(115200);
+	while (!Serial);
 	check_temp();
 	Serial.printf("[SETUP] Setup running on Core %i\n", xPortGetCoreID() );
 
@@ -147,17 +145,8 @@ void setup() {
 	pinMode(SRCLK	, OUTPUT);
 	pinMode(DATA_PIN, OUTPUT);
 
-	#ifndef DIGITAL_LED
-		ledcSetup(channel[0], freq, resolution);
-		ledcSetup(channel[1], freq, resolution);
-		ledcSetup(channel[2], freq, resolution);
-		ledcAttachPin(R_PIN, channel[0]);
-		ledcAttachPin(G_PIN, channel[1]);
-		ledcAttachPin(B_PIN, channel[2]);
-	#endif
-
-	ledcSetup(channel[3], 1, 12);
-	ledcAttachPin(SPK_PIN, channel[3]);
+	ledcSetup(channel[0], 1, 12);
+	ledcAttachPin(SPK_PIN, channel[0]);
 
 	if(!SPIFFS.begin()){
 		Serial.printf("[SETUP] SPIFFS mount Failed\n");
@@ -184,6 +173,7 @@ void setup() {
 	// 0x68 - DS3231 RTC
 
 	Serial.printf("[SETUP] Searching I2C\n");
+	vTaskDelay(500);
 	searchI2C();
 	I2C_resetRTCPointer();
 	I2C_configRTC();
@@ -192,7 +182,7 @@ void setup() {
 	struct tm timeinfo = I2C_getRTC();
 	Serial.println(&timeinfo, "[SETUP] %A, %B %d %Y %H:%M:%S");
 
-	searchWiFi();
+//	searchWiFi();
 	startWiFi();
 	initServer();
 
@@ -207,9 +197,8 @@ void setup() {
 	attachInterrupt(digitalPinToInterrupt(H_BUTTON), ISR_button, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RTC_INT), ISR_RTC, FALLING);
 
-	#ifdef DIGITAL_LED
-		pixels.begin();
-	#endif
+	strip.Begin();
+	strip.Show();
 
 	updateLed();
 	playTune(1);
@@ -230,7 +219,7 @@ void loop() {
 
 	updateLed();
 
-	vTaskDelay(100);
+	vTaskDelay(50);
 
 }
 
@@ -309,16 +298,17 @@ void startWiFi()	{
 		while (WiFi.status() != WL_CONNECTED) {
 			delay(250);
 			Serial.printf("=");
-			if(millis() > m +12000)	{
+		/*	if(millis() > m +12000)	{
 				Serial.printf("]\n[STARTWIFI] Timeout\n");
 				delay(500);
 				ESP.restart();
 			}
+		*/
 		}
 		Serial.printf("]\n[STARTWIFI] CONNECTED\n");
 
 	}   else {
-	
+		WiFi.enableSTA(false);
 		Serial.printf("[STARTWIFI] Creating Accesspoint\n");
 		WiFi.mode(WIFI_AP);
 		WiFi.softAP(ap_ssid, ap_pwd);
@@ -442,10 +432,13 @@ void searchI2C()	{
 
 		}    
 	}
-	if (nDevices == 0)
+	if (nDevices == 0)	{
 		Serial.printf("[SEARCHI2C] No I2C devices found\n");
-	else
+	}	
+	else	{
 		Serial.printf("[SEARCHI2C] done\n");
+	}
+
 }
 
 void I2C_receive()	{
@@ -489,15 +482,18 @@ void I2C_setTime( tm timeinfo )	{
 void I2C_setAlarm()	{
 
 	tm timeinfo = I2C_getRTC();
-	uint8_t day = timeinfo.tm_wday % 8;
+	uint8_t day = timeinfo.tm_wday == 0 ? 7 : timeinfo.tm_wday;
 	bool notToday = true;
 	
-	Serial.printf("[I2CSETALARM] %i, %i, %i %i \n", timeinfo.tm_hour, timeinfo.tm_min, (1<<(day+1) & alarm_repeat), (1<<(day-1)) );
+	bool b = (timeinfo.tm_hour == alarm_h) && (timeinfo.tm_min < alarm_m);
+	bool c = (timeinfo.tm_hour <= alarm_h);
 
-	if(timeinfo.tm_hour <= alarm_h && timeinfo.tm_min < alarm_m && (1<<(day-1) & alarm_repeat) > 0 )	{
+	if( (b || c) && ((1<<(day-1) & alarm_repeat) > 0) )	{
 		notToday = false;
 		Serial.printf("[I2CSETALARM] Alarm will trigger today (%i)\n", day);
 	}
+
+	//Serial.printf("[I2CSETALARM] %i, %i, %i, %i, %i, %i, %i \n", timeinfo.tm_wday, timeinfo.tm_hour, timeinfo.tm_min, (1<<(day-1) & alarm_repeat), (1<<(day-1)), day, day-1 );
 
 	I2C_resetRTCPointer();
 
@@ -511,6 +507,7 @@ void I2C_setAlarm()	{
 		day++;
 	}	
 	
+	day = day == 7 ? 0 : day;
 	Serial.printf("[I2CSETALARM] Alarm will trigger on %i at %i:%i!\n",day, alarm_h, alarm_m);
 
 	Wire.beginTransmission(I2C_RTC);
@@ -519,7 +516,7 @@ void I2C_setAlarm()	{
 	Wire.write(0b00000000);
 	Wire.write(decToBcd(alarm_m)	& 0b01111111 );
 	Wire.write(decToBcd(alarm_h)	& 0b00111111 );
-	Wire.write( ( decToBcd(day)		& 0b01111111 ) | 0b01000000 );
+	Wire.write((decToBcd(day)		& 0b01111111 ) | 0b01000000 );
 
 	if( Wire.endTransmission(false) == 0 )
 		Serial.printf("[I2CSETALARM] Success!\n");
@@ -719,9 +716,9 @@ void evalJson(String json)	{
 	s_pwd	=	root.containsKey("s_pwd")	? root["s_pwd"].as<String>()	: s_pwd;
 
 	if(root.containsKey("rgb") )	{
-		rgb_led[0]	=	root["rgb"][0].as<uint8_t>();
-		rgb_led[1]	=	root["rgb"][1].as<uint8_t>();
-		rgb_led[2]	=	root["rgb"][2].as<uint8_t>();
+		rgb_led[0]	=	root["rgb"][0].as<float>();
+		rgb_led[1]	=	root["rgb"][1].as<float>();
+		rgb_led[2]	=	root["rgb"][2].as<float>();
 	}
 
 	useWifi				=	root.containsKey("useW")	? root["useW"].as<bool>() : useWifi;
@@ -750,13 +747,13 @@ void evalJson(String json)	{
 		timeinfo.tm_sec		= root["time"][6].as<uint8_t>();
 		I2C_setTime(timeinfo);
 	}
-	if(root["ntpTime"].as<bool>() )	{
+	if(root["ntpTime"].as<bool>() && WiFi.status() == WL_CONNECTED)	{
 		//Set RTC to NTP time
 		//configTime( gmtOffset_sec, daylightOffset_sec, ntpServer[0], ntpServer[1], ntpServer[2] );
 		setToNTPTime();	
 	}
 	if(root.containsKey("rgb"))	{
-		//updateLed();
+		updateLed();
 	}
 	if(root["saveSettings"].as<bool>())	{
 		saveInit(SPIFFS);
@@ -786,27 +783,14 @@ int setToNTPTime()	{
 
 void updateLed()	{
 
-	#ifdef DIGITAL_LED
-		//Serial.printf("[UPDATELED] RGB: %i %i %i\n", rgb_led[0], rgb_led[1], rgb_led[2]);	
-		uint8_t r = rgb_led[0];
-		uint8_t g = rgb_led[1];
-		uint8_t b = rgb_led[2];
-		for(uint8_t index = 0; index < NUM_LEDS; index++)	{
-			pixels.setPixelColor(index, r, g, b);
-		}
-		vTaskDelay(50);
-		pixels.show();
-	#elif
-		ledcWriteTone(channel[0], 2000);
-		ledcWriteTone(channel[1], 2000);
-		ledcWriteTone(channel[2], 2000);
+	//Serial.printf("[UPDATELED] RGB: %i %i %i\n", rgb_led[0], rgb_led[1], rgb_led[2]);	
 
-		ledcWrite(channel[0], rgb_led[0] );
-		ledcWrite(channel[1], rgb_led[1] );
-		ledcWrite(channel[2], rgb_led[2] );
-	#endif
-
-	//vTaskDelay(100); 
+	RgbwColor c ( HsbColor(rgb_led[0], rgb_led[1], rgb_led[2]));
+	for(uint8_t index = 0; index < NUM_LEDS; index++)	{
+		strip.SetPixelColor(index, c);
+	}
+	vTaskDelay(50);
+	strip.Show();
 }
 
 inline byte decToBcd(byte val) {
@@ -819,53 +803,53 @@ inline byte bcdToDec(byte val) {
 
 void playTune(uint8_t a)	{
 
-	ledcWriteTone(channel[3], 0); 
-	ledcWrite(channel[3], 50); 
+	ledcWriteTone(channel[0], 0); 
+	ledcWrite(channel[0], 50); 
 	switch(a)	{
 		case 0:
 	
-			ledcWriteNote(channel[3], NOTE_Cs, 2);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_Cs, 2);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_C, 4);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_C, 4);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_Cs, 3);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_Cs, 3);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_D, 4);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_D, 4);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_E, 5);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_E, 5);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(350);
-			ledcWriteNote(channel[3], NOTE_F, 4);
-			ledcWrite(channel[3], 50);
+			ledcWriteNote(channel[0], NOTE_F, 4);
+			ledcWrite(channel[0], 50);
 			vTaskDelay(150);
-			ledcWriteNote(channel[3], NOTE_F, 6);
-			ledcWrite(channel[3], 50);
+			ledcWriteNote(channel[0], NOTE_F, 6);
+			ledcWrite(channel[0], 50);
 			vTaskDelay(150);
 			break;
 		case 1:
-			ledcWriteNote(channel[3], NOTE_D, 3);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_D, 3);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_E, 4);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_E, 4);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(170);
-			ledcWriteNote(channel[3], NOTE_F, 5);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_F, 5);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(300);
 			break;
 		case 2:
-			ledcWriteNote(channel[3], NOTE_Cs, 3);
-			ledcWrite(channel[3], 50); 
+			ledcWriteNote(channel[0], NOTE_Cs, 3);
+			ledcWrite(channel[0], 50); 
 			vTaskDelay(150);
 			break;
 	}
 
-	ledcWriteTone(channel[3], 0);
-	ledcWrite(channel[3], 0);
+	ledcWriteTone(channel[0], 0);
+	ledcWrite(channel[0], 0);
 
 }
 
@@ -892,7 +876,7 @@ void onEvent(AsyncWebSocket * server, AsyncWebSocketClient* client, AwsEventType
 	if(type == WS_EVT_CONNECT)	{
 		//Serial.printf("[ONEVENT]  ws[%s][%u] connect\n", server->url(), client->id());
 
-		client->printf("{\"rgb_led\":[%u,%u,%u]}", rgb_led[0], rgb_led[1], rgb_led[2]);
+		client->printf("{\"rgb_led\":[%f,%f,%f]}", rgb_led[0], rgb_led[1], rgb_led[2]);
 		return;
 
 	} else if(type == WS_EVT_DISCONNECT)	{

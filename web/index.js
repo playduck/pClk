@@ -103,7 +103,7 @@
 				let a = JSON.parse(event.data);
 				console.log(a);
 				if(a.rgb_led !== undefined)	{
-					findColor(a.rgb_led[0], a.rgb_led[1], a.rgb_led[2], false);
+					findColor(a.rgb_led[0], a.rgb_led[1], Math.pow(a.rgb_led[2], 1/Math.E), false);
 				}
 			};
 	}
@@ -227,11 +227,15 @@
 		global_cx = cx;
 		global_cy = cy;
 
-		let c = HSVtoRGB(h/360, cx / canvas.scrollWidth,(canvas.scrollHeight- cy) / canvas.scrollHeight);
+		let s = cx / canvas.scrollWidth;
+		let v = (canvas.scrollHeight - cy) / canvas.scrollHeight;
+		
+		let c = HSVtoRGB(h/360, s, v);
 		setPreview(c);
 		cursor.style = "display: block; left: " + (cx + rect.left - 11) + "px; top: " + (cy + rect.top - 11) + "px; background-color: rgb(" + c.r + "," + c.g + "," + c.b + ");";
 		if(send) 
-			sendWs( { "rgb":[c.r, c.g, c.b] } );
+		//	sendWs( { "rgb":[c.r, c.g, c.b] } );
+			sendWs( { "rgb":[ h/360, s, Math.pow(v, Math.E) ] } );
 		return  {r:c.r, g:c.g, b:c.b };
 	}
 
@@ -244,21 +248,22 @@
 		document.getElementById("acc").innerHTML = " :root { --acc: rgb(" + c.r + "," + c.g + "," + c.b + "); }";
 	}
 
-	function findColor(r, g, b, send=true)	{
+	function findColor(h, s, v, send=true)	{
+
+		let x,y;
 		
 		let canvas = document.getElementById("ccube");
 		let rect = canvas.getBoundingClientRect();
 
-		let h, x, y;
-		let c = RGBtoHSV(r, g, b);
-		h = c.h * 360;
-		if(h !== 0)	{
-			global_hue = h;
-		}
+		global_hue = h*360;
 		document.getElementById("hue").value = global_hue;
 		draw(global_hue);
-		x = c.s*canvas.scrollWidth + rect.left;
-		y = canvas.scrollHeight - c.v*canvas.scrollHeight + rect.top;
+
+		x = s * canvas.scrollWidth + rect.left;
+		y = canvas.scrollHeight - v * canvas.scrollHeight + rect.top;
+
+		console.log(h, s, v,x,y);
+
 		getColor(global_hue, x, y, send);
 	}
 
@@ -267,8 +272,9 @@
 		doUpdate = false;
 		global_hue = document.getElementById("hue").value;
 		draw(global_hue);
-		let c = HSVtoRGB(global_hue / 360, global_cx / canvas.scrollWidth, (canvas.scrollHeight - global_cy) / canvas.scrollHeight);
-		findColor(c.r, c.g, c.b);
+		//let c = HSVtoRGB(global_hue / 360, global_cx / canvas.scrollWidth, (canvas.scrollHeight - global_cy) / canvas.scrollHeight);
+		findColor(global_hue / 360, global_cx / canvas.scrollWidth, (canvas.scrollHeight - global_cy) / canvas.scrollHeight )
+		//findColor(c.r, c.g, c.b);
 	}
 	
 	function updateIcon(r,g,b)	{
