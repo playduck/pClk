@@ -37,7 +37,12 @@
 #include "Wire.h"
 #include <sys/time.h>
 #include <driver/adc.h>
+#include <Adafruit_NeoPixel.h>
 
+#define DIGITAL_LED 1
+
+#define NUM_LEDS 12
+#define DATA_PIN 27
 
 #define H_BUTTON	32	// HID button pin
 #define SPK_PIN		33	// Speaker pin
@@ -61,6 +66,10 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#ifdef DIGITAL_LED
+	Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS, DATA_PIN, NEO_GRBW + NEO_KHZ800);
 #endif
 
 AsyncWebServer server(80);				// Async Webserver at port 80
@@ -136,15 +145,18 @@ void setup() {
 	pinMode(SER		, OUTPUT);
 	pinMode(RCLK	, OUTPUT);
 	pinMode(SRCLK	, OUTPUT);
+	pinMode(DATA_PIN, OUTPUT);
 
-	ledcSetup(channel[0], freq, resolution);
-	ledcSetup(channel[1], freq, resolution);
-	ledcSetup(channel[2], freq, resolution);
+	#ifndef DIGITAL_LED
+		ledcSetup(channel[0], freq, resolution);
+		ledcSetup(channel[1], freq, resolution);
+		ledcSetup(channel[2], freq, resolution);
+		ledcAttachPin(R_PIN, channel[0]);
+		ledcAttachPin(G_PIN, channel[1]);
+		ledcAttachPin(B_PIN, channel[2]);
+	#endif
+
 	ledcSetup(channel[3], 1, 12);
-
-	ledcAttachPin(R_PIN, channel[0]);
-	ledcAttachPin(G_PIN, channel[1]);
-	ledcAttachPin(B_PIN, channel[2]);
 	ledcAttachPin(SPK_PIN, channel[3]);
 
 	if(!SPIFFS.begin()){
@@ -195,6 +207,10 @@ void setup() {
 	attachInterrupt(digitalPinToInterrupt(H_BUTTON), ISR_button, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RTC_INT), ISR_RTC, FALLING);
 
+	#ifdef DIGITAL_LED
+		pixels.begin();
+	#endif
+
 	updateLed();
 	playTune(1);
 	xTaskCreatePinnedToCore( coreloop, "coreloop", 4096, NULL, 0, NULL, taskCore);
@@ -211,6 +227,8 @@ void loop() {
 		Serial.printf("[LOOP0] Lost Wifi Connection");
 		startWiFi();
 	}
+
+	updateLed();
 
 	vTaskDelay(100);
 
@@ -738,7 +756,7 @@ void evalJson(String json)	{
 		setToNTPTime();	
 	}
 	if(root.containsKey("rgb"))	{
-		updateLed();
+		//updateLed();
 	}
 	if(root["saveSettings"].as<bool>())	{
 		saveInit(SPIFFS);
@@ -768,15 +786,25 @@ int setToNTPTime()	{
 
 void updateLed()	{
 
-	Serial.printf("[UPDATELED] \n");
+	#ifdef DIGITAL_LED
+		//Serial.printf("[UPDATELED] RGB: %i %i %i\n", rgb_led[0], rgb_led[1], rgb_led[2]);	
+		uint8_t r = rgb_led[0];
+		uint8_t g = rgb_led[1];
+		uint8_t b = rgb_led[2];
+		for(uint8_t index = 0; index < NUM_LEDS; index++)	{
+			pixels.setPixelColor(index, r, g, b);
+		}
+		vTaskDelay(50);
+		pixels.show();
+	#elif
+		ledcWriteTone(channel[0], 2000);
+		ledcWriteTone(channel[1], 2000);
+		ledcWriteTone(channel[2], 2000);
 
-	ledcWriteTone(channel[0], 2000);
-	ledcWriteTone(channel[1], 2000);
-	ledcWriteTone(channel[2], 2000);
-
-	ledcWrite(channel[0], rgb_led[0] );
-	ledcWrite(channel[1], rgb_led[1] );
-	ledcWrite(channel[2], rgb_led[2] );
+		ledcWrite(channel[0], rgb_led[0] );
+		ledcWrite(channel[1], rgb_led[1] );
+		ledcWrite(channel[2], rgb_led[2] );
+	#endif
 
 	//vTaskDelay(100); 
 }
