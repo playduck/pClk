@@ -12,7 +12,7 @@
 		updateStyle();
 		//changeTab("L");
 		//window.scroll(0,0);
-		findColor( Math.random()*255, Math.random()*255, Math.random()*255, false );
+		findColor( Math.random(), Math.random(), Math.random(), false );
 		setTimeSelect(0);
 		//draw(global_hue);
 		/*loop();*/
