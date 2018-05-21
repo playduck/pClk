@@ -28,6 +28,7 @@
 #include "time.h"
 #include "AsyncTCP.h"
 #include "ESPAsyncWebServer.h"
+#include <ESPmDNS.h>
 #include "FS.h"
 #include "SPIFFS.h"
 #include <SPIFFSEditor.h>
@@ -75,8 +76,7 @@ AsyncWebSocket ws("/ws");				// Websocets at ws://[esp ip]/ws
 
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;	// used for disabling isr calls inside isr
 uint8_t temprature_sens_read();			// enable internal temp sensor
-static int taskCore = 0;				// defines secondary core
-bool loopdebug = true;					// REPLACE
+//static int taskCore = 0;				// defines secondary core
 
 const char * ap_ssid = "4";				// AP SSID
 const char * ap_pwd = "12345678";		// AP PWD
@@ -202,37 +202,16 @@ void setup() {
 
 	updateLed();
 	playTune(1);
-	xTaskCreatePinnedToCore( coreloop, "coreloop", 4096, NULL, 0, NULL, taskCore);
+	//xTaskCreatePinnedToCore( coreloop, "coreloop", 4096, NULL, 0, NULL, taskCore);
 	Serial.printf("[SETUP] Setup complete\n");
 }
 
 void loop() {
 
-	if(loopdebug)	{
-		loopdebug = false;
-			Serial.printf("[LOOP0] loop0 running on Core %i\n", xPortGetCoreID() );
-	}
 	if( (WiFi.status() != WL_CONNECTED) && useWifi )	{
 		Serial.printf("[LOOP0] Lost Wifi Connection");
 		startWiFi();
 	}
-
-	updateLed();
-
-	vTaskDelay(50);
-
-}
-
-void coreloop( void * pvParameters )	{
-
-	Serial.printf("[LOOP1] loop1 running on Core %i\n", xPortGetCoreID() );
-
-	while(true) {
-
-	// 	shift(disp[0], 0);
-	// 	shift(disp[1], 1);
-	// 	shift(disp[2], 2);
-	// 	shift(disp[3], 3);
 
 	if(shouldReboot) {
 		saveInit(SPIFFS);
@@ -240,6 +219,7 @@ void coreloop( void * pvParameters )	{
 		delay(100);
 		ESP.restart();
 	}
+
 	if(handleAlarm)	{
 		I2C_evalAlarm();
 		handleAlarm = false;
@@ -254,10 +234,11 @@ void coreloop( void * pvParameters )	{
 		check_temp();
 	}
 	timer++;
+
+	updateLed();
+
 	vTaskDelay(50);
 
-	}
-	
 }
 
 void searchWiFi()	{
@@ -294,7 +275,7 @@ void startWiFi()	{
 		Serial.printf("[STARTWIFI] SSID: %s : PWD: %s\n[", s_ssid.c_str() , s_pwd.c_str() );
 		WiFi.enableSTA(true);
 		WiFi.begin( s_ssid.c_str() , s_pwd.c_str() );
-		long m = millis();
+		//long m = millis();
 		while (WiFi.status() != WL_CONNECTED) {
 			delay(250);
 			Serial.printf("=");
@@ -337,6 +318,10 @@ void initServer()	{
 
 	//attach AsyncEventSource
 	//server.addHandler( & events);
+	if (!MDNS.begin("Clock"))
+        Serial.printf("[INITSERVER] Error setting up MDNS responder!");
+		else
+		Serial.printf("[INITSERVER] Set up MDNS responder!");
 
 	// respond to GET requests on URL /heap
 	server.on("/heap", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -473,7 +458,7 @@ void I2C_setTime( tm timeinfo )	{
 	Wire.write(decToBcd(timeinfo.tm_mon));
 	Wire.write(decToBcd(timeinfo.tm_year));
 
-	if( Wire.endTransmission(false) == 1 )
+	if( Wire.endTransmission(true) == 1 )
 		Serial.printf("[I2CSETTIME] Success!\n");
 
 	I2C_resetRTCPointer();
@@ -518,7 +503,7 @@ void I2C_setAlarm()	{
 	Wire.write(decToBcd(alarm_h)	& 0b00111111 );
 	Wire.write((decToBcd(day)		& 0b01111111 ) | 0b01000000 );
 
-	if( Wire.endTransmission(false) == 0 )
+	if( Wire.endTransmission(true) == 0 )
 		Serial.printf("[I2CSETALARM] Success!\n");
 
 	I2C_resetRTCPointer();
@@ -600,7 +585,7 @@ void I2C_configRTC()	{
 	Wire.write(0b10000111);
 	Wire.write(0b00000100);
 
-	if( Wire.endTransmission(false) == 0 )
+	if( Wire.endTransmission(true) == 0 )
 		Serial.printf("[I2CCONFIGRTC] Success!\n");
 
 	I2C_resetRTCPointer();
@@ -610,7 +595,7 @@ void I2C_configRTC()	{
 inline void I2C_resetRTCPointer()	{
 	Wire.beginTransmission(I2C_RTC);
 	Wire.write(0);
-	Wire.endTransmission(false);
+	Wire.endTransmission(true);
 	vTaskDelay(50);
 }
 
@@ -704,7 +689,7 @@ void saveInit(fs::FS &fs)	{
 
 void evalJson(String json)	{
 	//Serial.printf("[EVALJSON] %s\n", json.c_str());
-	StaticJsonBuffer<400> jsonBuffer;
+	StaticJsonBuffer<512> jsonBuffer;
 	JsonObject& root = jsonBuffer.parseObject( json.c_str() );
 
 	if (!root.success()) {
@@ -896,7 +881,7 @@ void onEvent(AsyncWebSocket * server, AsyncWebSocketClient* client, AwsEventType
 			//Serial.printf("[ONEVENT]  ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
 			if(info->opcode == WS_TEXT){
 				data[len] = 0;
-				Serial.printf(" %s (char*) \n", (char*)data);
+				//Serial.printf(" %s (char*) \n", (char*)data);
 
 				client->printf("__s__");
 				evalJson( (char*)data );
