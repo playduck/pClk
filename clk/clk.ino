@@ -116,6 +116,7 @@ void IRAM_ATTR ISR_button() {
 
 	Serial.printf("[ISRBUTTON] Hall: %i\n", hallRead() );
 	Serial.printf("[ISRBUTTON] Temp: %i°C\n", int( (temprature_sens_read() - 32) / 1.8) );
+	Serial.printf("[ISRBUTTON] RSSi: %i dBm\n", WiFi.RSSI()); 
 
 	portEXIT_CRITICAL_ISR(&mux);
 }
@@ -268,11 +269,11 @@ void startWiFi()	{
 
 	if(useWifi) {
 
-		WiFi.mode(WIFI_STA);
 		WiFi.disconnect(true);
-		WiFi.persistent(false);		
+		WiFi.persistent(false);
+		WiFi.mode(WIFI_STA);	
 
-		Serial.printf("[STARTWIFI] SSID: %s : PWD: %s\n[", s_ssid.c_str() , s_pwd.c_str() );
+		Serial.printf("[STARTWIFI] SSID: %s : PWD: %s\n\v[", s_ssid.c_str() , s_pwd.c_str() );
 		WiFi.enableSTA(true);
 		WiFi.begin( s_ssid.c_str() , s_pwd.c_str() );
 		//long m = millis();
@@ -307,6 +308,8 @@ void startWiFi()	{
 	Serial.println(WiFi.gatewayIP());
 	Serial.print("[STARTWIFI] DNS: ");
 	Serial.println(WiFi.dnsIP());
+	Serial.printf("[STARTWIFI] RSSi: %i dBm\n", WiFi.RSSI()); 
+
 }
 
 void initServer()	{
@@ -319,9 +322,9 @@ void initServer()	{
 	//attach AsyncEventSource
 	//server.addHandler( & events);
 	if (!MDNS.begin("Clock"))
-        Serial.printf("[INITSERVER] Error setting up MDNS responder!");
+        Serial.printf("[INITSERVER] Error setting up MDNS responder!\n");
 		else
-		Serial.printf("[INITSERVER] Set up MDNS responder!");
+		Serial.printf("[INITSERVER] Set up MDNS responder!\n");
 
 	// respond to GET requests on URL /heap
 	server.on("/heap", HTTP_GET, [](AsyncWebServerRequest * request) {
