@@ -126,6 +126,7 @@ input[type="color"]::-moz-color-swatch {
 	position: relative;
 	width: 250px;
 	background-color: transparent;
+	opacity: 1;
 }
  #hue::-webkit-slider-runnable-track {
 	 height: 50%;
@@ -135,7 +136,14 @@ input[type="color"]::-moz-color-swatch {
 	 background: -o-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
 	 background: -moz-linear-gradient(right, red, orange, yellow, green, cyan, blue, violet, red);
 	 border-radius: 50px;
+	 transition: 1.5s;
+	 opacity: 0.3;
 }
+#hue::-webkit-slider-runnable-track:active	{
+	transition: 0.2s;
+	opacity: 1;
+}
+
  #hue::-webkit-slider-thumb {
 	 -webkit-appearance: none;
 	 border-radius: 50%;
@@ -149,6 +157,7 @@ input[type="color"]::-moz-color-swatch {
 	 -moz-box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
 	 box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 0.25);
 	 background: var(--acc) !important;
+	 opacity: 1!important;
 }
 button, input[type="button"], input[type="submit"] {
 	font-size: 0.9em;
